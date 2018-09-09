@@ -178,7 +178,11 @@ public class WidgetTreeList {
 		return window;
 	}
 
-	private static class RootEntry extends WidgetTreeEntry {
+	public RootEntry getRoot() {
+		return root;
+	}
+
+	public static class RootEntry extends WidgetTreeEntry {
 		private RootEntry(WidgetTreeList treeList, String name) {
 			super(treeList, name, WidgetType.EMPTY);
 		}

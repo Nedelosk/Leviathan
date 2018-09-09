@@ -10,11 +10,10 @@ import leviathan.api.gui.IScrollable;
 import leviathan.api.gui.ITextureWidget;
 import leviathan.api.gui.IWindowWidget;
 import leviathan.api.render.IDrawable;
-import leviathan.gui.widget.layouts.WidgetGroup;
 import leviathan.utils.Sprite;
 import org.lwjgl.input.Mouse;
 
-public class ScrollBarWidget extends WidgetGroup {
+public class ScrollBarWidget extends WidgetContainer {
 	/* Attributes - Final */
 	private final ITextureWidget slider;
 	@Nullable
@@ -26,7 +25,7 @@ public class ScrollBarWidget extends WidgetGroup {
 	private boolean wasClicked;
 	private boolean vertical = false;
 	private int currentValue;
-	private final WidgetGroup interactionField;
+	private final WidgetContainer interactionField;
 	private int initialMouseClick;
 
 	/* Attributes - Parameters */
@@ -39,11 +38,11 @@ public class ScrollBarWidget extends WidgetGroup {
 	public ScrollBarWidget(int xPos, int yPos, int width, int height, Sprite sliderTexture) {
 		super(xPos, yPos, width, height);
 
-		interactionField = add(new WidgetGroup(0, 0, width, height));
+		interactionField = add(new WidgetContainer(0, 0, width, height));
 		isScrolling = false;
 		hasBorder = false;
 		wasClicked = false;
-		visible = true;
+		setVisible(true);
 		slider = interactionField.drawable(sliderTexture);
 		background = null;
 	}
@@ -53,11 +52,11 @@ public class ScrollBarWidget extends WidgetGroup {
 
 		int offset = hasBorder ? 1 : 0;
 
-		interactionField = new WidgetGroup(offset, offset, hasBorder ? width - 2 : width, hasBorder ? height - 2 : height);
+		interactionField = new WidgetContainer(offset, offset, hasBorder ? getHeight() - 2 : getHeight(), hasBorder ? getHeight() - 2 : getHeight());
 		isScrolling = false;
 		this.hasBorder = hasBorder;
 		wasClicked = false;
-		visible = true;
+		setVisible(true);
 
 		background = drawable(backgroundTexture);
 		slider = interactionField.drawable(sliderTexture);
@@ -69,10 +68,10 @@ public class ScrollBarWidget extends WidgetGroup {
 
 		int offset = hasBorder ? 1 : 0;
 
-		interactionField = new WidgetGroup(offset, offset, hasBorder ? width - 2 : width, hasBorder ? height - 2 : height);
+		interactionField = new WidgetContainer(offset, offset, hasBorder ? width - 2 : width, hasBorder ? height - 2 : height);
 		isScrolling = false;
 		wasClicked = false;
-		visible = true;
+		setVisible(true);
 		this.hasBorder = hasBorder;
 
 		background = drawable(backgroundTexture);

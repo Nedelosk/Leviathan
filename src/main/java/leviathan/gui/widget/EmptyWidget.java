@@ -79,6 +79,16 @@ public class EmptyWidget implements IWidget {
 	}
 
 	@Override
+	public void validate() {
+
+	}
+
+	@Override
+	public void invalidate() {
+
+	}
+
+	@Override
 	public boolean isEmpty() {
 		return true;
 	}
@@ -124,11 +134,6 @@ public class EmptyWidget implements IWidget {
 
 	@Override
 	public IWidget setLocation(int xPos, int yPos) {
-		return this;
-	}
-
-	@Override
-	public IWidget setOffset(int xOffset, int yOffset) {
 		return this;
 	}
 

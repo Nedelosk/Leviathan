@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * directly.
  */
 @SideOnly(Side.CLIENT)
-public interface IWindowWidget extends IWidgetGroup {
+public interface IWindowWidget extends IWidgetContainer {
 	/**
 	 * Returns the mouse position.
 	 */
@@ -77,7 +77,7 @@ public interface IWindowWidget extends IWidgetGroup {
 	@Nullable
 	IWidget getFocusedElement();
 
-	void actionOnHovered(Predicate<IWidget> filter, Consumer<IWidget> action);
+	void actionOnHovered(Predicate<IWidget> filter, Consumer<IWidget> action, boolean onlyFirst);
 
 	boolean isMouseOver(IWidget element);
 

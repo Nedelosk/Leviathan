@@ -4,10 +4,10 @@ import net.minecraft.client.renderer.GlStateManager;
 
 import leviathan.api.Region;
 import leviathan.api.gui.IWidget;
-import leviathan.gui.widget.layouts.WidgetGroup;
+import leviathan.gui.widget.WidgetContainer;
 import leviathan.gui.workspace.GuiWorkspace;
 
-public class WorkspaceObject extends WidgetGroup {
+public class WorkspaceObject extends WidgetContainer {
 	public WorkspaceObject() {
 		super(0, 0, 176, 166);
 	}

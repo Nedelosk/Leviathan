@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 import leviathan.api.Region;
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.IWidgetGroup;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWidgetType;
 import leviathan.api.gui.WidgetAlignment;
 import leviathan.api.gui.WidgetType;
@@ -152,7 +152,11 @@ public class GuiWorkspace extends GuiScreen implements IGuiSizable, ITreeListLis
 			yPos = canvasRegion.getHeight() - height;
 		}
 		selectedWidget.setRegion(new Region(xPos, yPos, width, height));
-		overlay.setRegion(selectedWidget.getRegion());
+		IWidget parent = selectedWidget.getParent();
+		if (parent == null) {
+			parent = canvas;
+		}
+		overlay.setRegion(selectedWidget.getRegion().translate(parent.getAbsoluteX(), parent.getAbsoluteY()));
 	}
 
 	@Override
@@ -164,7 +168,11 @@ public class GuiWorkspace extends GuiScreen implements IGuiSizable, ITreeListLis
 		}
 		IWidget widget = optionalWidget.get();
 		overlay.setVisible(true);
-		overlay.setRegion(widget.getRegion());
+		IWidget parent = widget.getParent();
+		if (parent == null) {
+			parent = canvas;
+		}
+		overlay.setRegion(widget.getRegion().translate(parent.getAbsoluteX(), parent.getAbsoluteY()));
 	}
 
 	@Override
@@ -195,11 +203,11 @@ public class GuiWorkspace extends GuiScreen implements IGuiSizable, ITreeListLis
 		IWidget widget = optionalWidget.get();
 		IWidget oldP = oldParentWidget.get();
 		IWidget newP = newParentWidget.get();
-		if (!(newP instanceof IWidgetGroup) || !(oldP instanceof IWidgetGroup)) {
+		if (!(newP instanceof IWidgetContainer) || !(oldP instanceof IWidgetContainer)) {
 			return;
 		}
-		((IWidgetGroup) oldP).remove(widget);
-		((IWidgetGroup) newP).add(widget);
+		((IWidgetContainer) oldP).remove(widget);
+		((IWidgetContainer) newP).add(widget);
 	}
 
 	@Override
@@ -210,10 +218,10 @@ public class GuiWorkspace extends GuiScreen implements IGuiSizable, ITreeListLis
 		}
 		IWidget widget = optionalWidget.get();
 		IWidget parent = widget.getParent();
-		if (!(parent instanceof IWidgetGroup)) {
+		if (!(parent instanceof IWidgetContainer)) {
 			return;
 		}
-		((IWidgetGroup) parent).remove(widget);
+		((IWidgetContainer) parent).remove(widget);
 	}
 
 	public WidgetTreeList getWidgets() {
@@ -269,7 +277,6 @@ public class GuiWorkspace extends GuiScreen implements IGuiSizable, ITreeListLis
 		//if(!inited){
 		//object.setLocation((canvas.getWidth() - object.getWidth()) / 2, (canvas.getHeight() - object.getHeight()) / 2);
 		//overlay.setRegion(object.getRegion());
-		overlay.setOffset(canvas.getX(), canvas.getY());
 		//}
 		//inited = true;
 	}
@@ -306,14 +313,14 @@ public class GuiWorkspace extends GuiScreen implements IGuiSizable, ITreeListLis
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 
-		window.actionOnHovered(widget -> widget.hasListener(MouseEvent.MOUSE_DOWN), widget -> widget.dispatchEvent(new MouseEvent(widget, MouseEvent.MOUSE_DOWN, mouseX, mouseY, mouseButton)));
+		window.actionOnHovered(widget -> widget.hasListener(MouseEvent.MOUSE_DOWN), widget -> window.dispatchEvent(new MouseEvent(widget, MouseEvent.MOUSE_DOWN, mouseX, mouseY, mouseButton)), true);
 	}
 
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int mouseButton) {
 		super.mouseReleased(mouseX, mouseY, mouseButton);
 
-		window.actionOnHovered(widget -> widget.hasListener(MouseEvent.MOUSE_UP), widget -> widget.dispatchEvent(new MouseEvent(widget, MouseEvent.MOUSE_UP, mouseX, mouseY, mouseButton)));
+		window.actionOnHovered(widget -> widget.hasListener(MouseEvent.MOUSE_UP), widget -> window.dispatchEvent(new MouseEvent(widget, MouseEvent.MOUSE_UP, mouseX, mouseY, mouseButton)), true);
 	}
 
 	@Override

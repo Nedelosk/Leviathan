@@ -25,7 +25,7 @@ public class TextureWidget extends Widget implements ITextureWidget {
 	@Override
 	public void drawElement(int mouseX, int mouseY) {
 		GlStateManager.enableAlpha();
-		drawable.draw(0, 0, width, height);
+		drawable.draw(0, 0, getWidth(), getHeight());
 		GlStateManager.disableAlpha();
 	}
 

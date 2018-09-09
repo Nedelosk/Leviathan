@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.IWidgetGroup;
+import leviathan.api.gui.IWidgetContainer;
 
 @SideOnly(Side.CLIENT)
 public enum EventOrigin {
@@ -32,10 +32,10 @@ public enum EventOrigin {
 	DIRECT_CHILD {
 		@Override
 		public boolean isOrigin(IWidget origin, @Nullable IWidget element) {
-			if (element == null || !(element instanceof IWidgetGroup)) {
+			if (element == null || !(element instanceof IWidgetContainer)) {
 				return false;
 			}
-			Collection<IWidget> elements = ((IWidgetGroup) element).getElements();
+			Collection<IWidget> elements = ((IWidgetContainer) element).getElements();
 			return elements.contains(origin);
 		}
 	};

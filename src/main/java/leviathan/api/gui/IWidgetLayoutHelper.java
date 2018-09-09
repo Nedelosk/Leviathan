@@ -23,7 +23,7 @@ public interface IWidgetLayoutHelper {
 	void clear();
 
 	/**
-	 * Adds the layouts to the parent of the {@link IWidgetGroup}. And calls {@link #clear()}
+	 * Adds the layouts to the parent of the {@link IWidgetContainer}. And calls {@link #clear()}
 	 */
 	void finish(boolean centerX);
 
@@ -34,12 +34,12 @@ public interface IWidgetLayoutHelper {
 	/**
 	 * @return All layouts that were created with the help of this helper since the last {@link #clear()} or {@link #finish()}.
 	 */
-	Collection<IWidgetLayout> layouts();
+	Collection<IWidgetContainer> layouts();
 
-	interface LayoutFactory {
+	interface ContainerFactory {
 		/**
 		 * A factory method to create new layouts if the last layout is full.
 		 */
-		IWidgetLayout createLayout(int xOffset, int yOffset);
+		IWidgetContainer createContainer(int xOffset, int yOffset);
 	}
 }

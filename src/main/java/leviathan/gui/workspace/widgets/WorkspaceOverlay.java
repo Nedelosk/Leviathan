@@ -13,11 +13,11 @@ import leviathan.api.gui.IWindowWidget;
 import leviathan.api.gui.WidgetAlignment;
 import leviathan.api.gui.events.ElementEvent;
 import leviathan.api.gui.events.MouseEvent;
-import leviathan.gui.widget.layouts.WidgetGroup;
+import leviathan.gui.widget.WidgetContainer;
 import leviathan.gui.workspace.GuiWorkspace;
 import org.lwjgl.opengl.GL11;
 
-public class WorkspaceOverlay extends WidgetGroup {
+public class WorkspaceOverlay extends WidgetContainer {
 	private short pattern = (short) 52428;
 	private int timer;
 	private final GuiWorkspace creator;
@@ -33,7 +33,7 @@ public class WorkspaceOverlay extends WidgetGroup {
 			widget.addListener(MouseEvent.MOUSE_DRAG_MOVE, event -> {
 				int diffX = Math.round(event.getDiffX());
 				int diffY = Math.round(event.getDiffY());
-				Region region = getRegion();
+				Region region = getRegion().translate(-creator.canvas.getAbsoluteX(), -creator.canvas.getAbsoluteY());
 				int x = region.getX();
 				int y = region.getY();
 				int w = region.getWidth();

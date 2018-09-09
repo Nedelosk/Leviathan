@@ -24,7 +24,7 @@ public class ButtonWidget extends Widget {
 		textures[1] = enabledTexture;
 		textures[2] = mouseOverTexture;
 		addListener(MouseEvent.MOUSE_DOWN, event -> {
-			if (!enabled) {
+			if (!isEnabled()) {
 				return;
 			}
 			onPressed();
@@ -39,7 +39,7 @@ public class ButtonWidget extends Widget {
 			textures[i] = new Sprite(texture.textureLocation, texture.u, texture.v + texture.height * i, texture.width, texture.height);
 		}
 		addListener(MouseEvent.MOUSE_DOWN, event -> {
-			if (!enabled) {
+			if (!isEnabled()) {
 				return;
 			}
 			onPressed();
@@ -80,7 +80,7 @@ public class ButtonWidget extends Widget {
 	protected int getHoverState(boolean mouseOver) {
 		int i = 1;
 
-		if (!this.enabled) {
+		if (!isEnabled()) {
 			i = 0;
 		} else if (mouseOver) {
 			i = 2;

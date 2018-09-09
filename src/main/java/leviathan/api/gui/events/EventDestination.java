@@ -4,7 +4,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.IWidgetGroup;
+import leviathan.api.gui.IWidgetContainer;
 
 
 @SideOnly(Side.CLIENT)
@@ -27,10 +27,10 @@ public enum EventDestination {
 	CHILDREN {
 		@Override
 		public void sendEvent(IWidget element, JEGEvent event) {
-			if (!(element instanceof IWidgetGroup)) {
+			if (!(element instanceof IWidgetContainer)) {
 				return;
 			}
-			for (IWidget child : ((IWidgetGroup) element).getElements()) {
+			for (IWidget child : ((IWidgetContainer) element).getElements()) {
 				child.receiveEvent(event);
 			}
 		}

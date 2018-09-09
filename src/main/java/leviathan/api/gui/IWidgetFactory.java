@@ -19,9 +19,9 @@ public interface IWidgetFactory {
 	ITextStyle getGuiStyle();
 
 	/* LAYOUTS */
-	IWidgetLayout createHorizontal(int xPos, int yPos, int height);
+	IWidgetContainer createHorizontal(int xPos, int yPos, int height, int gap);
 
-	IWidgetLayout createVertical(int xPos, int yPos, int width);
+	IWidgetContainer createVertical(int xPos, int yPos, int width, int gap);
 
-	IWidgetGroup createPane(int xPos, int yPos, int width, int height);
+	IWidgetContainer createPane(int xPos, int yPos, int width, int height);
 }

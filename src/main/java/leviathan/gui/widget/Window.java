@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.IWidgetGroup;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWindowWidget;
 import leviathan.api.gui.events.ElementEvent;
 import leviathan.api.gui.events.EventDestination;
@@ -30,14 +30,13 @@ import leviathan.api.gui.events.FocusEvent;
 import leviathan.api.gui.events.JEGEvent;
 import leviathan.api.gui.events.MouseEvent;
 import leviathan.gui.IGuiSizable;
-import leviathan.gui.widget.layouts.WidgetGroup;
 import org.lwjgl.input.Mouse;
 
 /**
  * This element is the top parent.
  */
 @SideOnly(Side.CLIENT)
-public class Window<G extends GuiScreen & IGuiSizable> extends WidgetGroup implements IWindowWidget {
+public class Window<G extends GuiScreen & IGuiSizable> extends WidgetContainer implements IWindowWidget {
 	private final Map<String, IWidget> widgets = new HashMap<>();
 	protected final G gui;
 	@Nullable
@@ -208,6 +207,12 @@ public class Window<G extends GuiScreen & IGuiSizable> extends WidgetGroup imple
 		}
 	}
 
+	@Override
+	public void drawElement(int mouseX, int mouseY) {
+		validate();
+		super.drawElement(mouseX, mouseY);
+	}
+
 	protected void updateWindow() {
 		this.setMousedOverElement(this.calculateMousedOverElement());
 		if (this.getFocusedElement() != null && (!this.getFocusedElement().isVisible() || !this.getFocusedElement().isEnabled())) {
@@ -221,8 +226,8 @@ public class Window<G extends GuiScreen & IGuiSizable> extends WidgetGroup imple
 	}
 
 	@Override
-	public void actionOnHovered(Predicate<IWidget> filter, Consumer<IWidget> action) {
-		calculateHoverElements(filter).forEach(action);
+	public void actionOnHovered(Predicate<IWidget> filter, Consumer<IWidget> action, boolean onlyFirst) {
+		calculateHoverElements(filter, onlyFirst).forEach(action);
 	}
 
 	public void drawTooltip(int mouseX, int mouseY) {
@@ -344,8 +349,8 @@ public class Window<G extends GuiScreen & IGuiSizable> extends WidgetGroup imple
 		if (name != null && !widgets.containsKey(name)) {
 			widgets.put(name, widget);
 		}
-		if (widget instanceof IWidgetGroup) {
-			for (IWidget child : ((IWidgetGroup) widget).getElements()) {
+		if (widget instanceof IWidgetContainer) {
+			for (IWidget child : ((IWidgetContainer) widget).getElements()) {
 				addElement(child);
 			}
 		}

@@ -10,12 +10,12 @@ import java.util.function.Predicate;
 import leviathan.api.gui.IWidget;
 import leviathan.api.gui.IWindowWidget;
 import leviathan.gui.events.EventValueChanged;
-import leviathan.gui.widget.layouts.VerticalLayout;
+import leviathan.gui.layouts.VerticalLayout;
 
 /**
  * A element list with selectable elements.
  */
-public class WidgetList<V> extends VerticalLayout {
+public class WidgetList<V> extends WidgetContainer {
 	private final Map<V, IWidget> allOptions = new LinkedHashMap<>();
 	private final Map<V, IWidget> visibleOptions = new LinkedHashMap<>();
 	private final BiFunction<V, WidgetList, IWidget> optionFactory;
@@ -27,7 +27,8 @@ public class WidgetList<V> extends VerticalLayout {
 	private Predicate<V> validator;
 
 	public WidgetList(int xPos, int yPos, int width, BiFunction<V, WidgetList, IWidget> optionFactory, @Nullable V defaultValue) {
-		super(xPos, yPos, width);
+		super(xPos, yPos, width, 0);
+		setLayout(new VerticalLayout(0));
 		this.optionFactory = optionFactory;
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;

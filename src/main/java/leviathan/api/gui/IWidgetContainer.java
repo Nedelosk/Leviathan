@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import leviathan.api.ILayoutManager;
 import leviathan.api.gui.style.ITextStyle;
 import leviathan.api.render.DrawMode;
 import leviathan.api.render.IDrawable;
@@ -18,7 +19,7 @@ import leviathan.api.render.ISprite;
 
 
 @SideOnly(Side.CLIENT)
-public interface IWidgetGroup extends IWidget {
+public interface IWidgetContainer extends IWidget, Iterable<IWidget> {
 	/**
 	 * Adds a element to this layout.
 	 */
@@ -53,7 +54,6 @@ public interface IWidgetGroup extends IWidget {
 		return this;
 	}
 
-
 	void clear();
 
 	@Nullable
@@ -64,7 +64,20 @@ public interface IWidgetGroup extends IWidget {
 	 */
 	List<IWidget> getElements();
 
-	Collection<IWidget> calculateHoverElements(Predicate<IWidget> filter);
+	@Nullable
+	ILayoutManager getLayout();
+
+	IWidgetContainer setLayout(ILayoutManager layoutManager);
+
+	/**
+	 * Computes all information needed for drawing and calls {@link #invalidate()}
+	 * on child elementBuilders which has been changed. Don't call this method directly, it's for
+	 * internal usage only, instead you should use {@link #validate()}.
+	 */
+	void doLayout();
+
+
+	Collection<IWidget> calculateHoverElements(Predicate<IWidget> filter, boolean onlyFirst);
 
 	@Nullable
 	IWidget calculateHoverElement(Predicate<IWidget> filter);
@@ -124,23 +137,45 @@ public interface IWidgetGroup extends IWidget {
 
 	ITextureWidget drawable(int x, int y, int width, int height, IDrawable drawable);
 
-	default IWidgetLayout vertical(int width) {
+	default IWidgetContainer vertical(int width) {
 		return vertical(0, 0, width);
 	}
 
-	IWidgetLayout vertical(int xPos, int yPos, int width);
+	default IWidgetContainer vertical(int width, int gap) {
+		return vertical(0, 0, width, gap);
+	}
 
-	IWidgetLayout horizontal(int xPos, int yPos, int height);
+	default IWidgetContainer vertical(int xPos, int yPos, int width){
+		return vertical(xPos, yPos, width, 0);
+	}
 
-	default IWidgetLayout horizontal(int height) {
+	IWidgetContainer vertical(int xPos, int yPos, int width, int gap);
+
+	default IWidgetContainer horizontal(int xPos, int yPos, int height){
+		return horizontal(xPos, yPos, height, 0);
+	}
+
+	IWidgetContainer horizontal(int xPos, int yPos, int height, int gap);
+
+	default IWidgetContainer horizontal(int height) {
 		return horizontal(0, 0, height);
 	}
 
-	IWidgetGroup pane(int xPos, int yPos, int width, int height);
+	default IWidgetContainer horizontal(int height, int gap) {
+		return horizontal(0, 0, height, gap);
+	}
 
-	default IWidgetGroup pane(int width, int height) {
+	IWidgetContainer pane(int xPos, int yPos, int width, int height);
+
+	default IWidgetContainer pane(int width, int height) {
 		return pane(0, 0, width, height);
 	}
 
-	IWidgetLayoutHelper layoutHelper(IWidgetLayoutHelper.LayoutFactory layoutFactory, int width, int height);
+	IWidgetContainer container(int xPos, int yPos, int width, int height);
+
+	default IWidgetContainer container(int width, int height){
+		return container(0, 0, width, height);
+	}
+
+	IWidgetLayoutHelper layoutHelper(IWidgetLayoutHelper.ContainerFactory layoutFactory, int width, int height);
 }

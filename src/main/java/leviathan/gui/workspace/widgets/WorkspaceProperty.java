@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.text.WordUtils;
 
 import leviathan.api.gui.ILabelWidget;
-import leviathan.api.gui.IWidgetGroup;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.events.MouseEvent;
 import leviathan.api.gui.events.TextEditEvent;
 import leviathan.api.properties.IProperty;
@@ -14,11 +14,11 @@ import leviathan.api.properties.serializer.IRangeSerializer;
 import leviathan.api.render.ISprite;
 import leviathan.gui.widget.ColoredWidget;
 import leviathan.gui.widget.TextEditWidget;
-import leviathan.gui.widget.layouts.WidgetGroup;
+import leviathan.gui.widget.WidgetContainer;
 import leviathan.utils.ResourceUtil;
 import leviathan.utils.Sprite;
 
-public class WorkspaceProperty extends WidgetGroup {
+public class WorkspaceProperty extends WidgetContainer {
 	@Nullable
 	private final ILabelWidget label;
 	@Nullable
@@ -36,7 +36,7 @@ public class WorkspaceProperty extends WidgetGroup {
 			this.label = null;
 		}else{*/
 		setHeight(24);
-		IWidgetGroup group = pane(5, 11, 75, 10);
+		IWidgetContainer group = pane(5, 11, 75, 10);
 		group.add(new ColoredWidget(-2, -2, 63, 13, 0xFF9b9b9b));
 		group.add(new ColoredWidget(-1, -1, 61, 11, 0xFF5e5e5e));
 		if (serializer instanceof IRangeSerializer) {
@@ -68,7 +68,7 @@ public class WorkspaceProperty extends WidgetGroup {
 		return property;
 	}
 
-	private class Button extends WidgetGroup {
+	private class Button extends WidgetContainer {
 		private final ColoredWidget colored;
 
 		public Button(int xPos, int yPos, ISprite sprite, boolean next) {

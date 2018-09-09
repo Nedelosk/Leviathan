@@ -7,9 +7,8 @@ import leviathan.api.Region;
 import leviathan.api.gui.IScrollable;
 import leviathan.api.gui.IWidget;
 import leviathan.api.gui.events.MouseEvent;
-import leviathan.gui.widget.layouts.WidgetGroup;
 
-public class ScrollableWidget extends WidgetGroup implements IScrollable {
+public class ScrollableWidget extends WidgetContainer implements IScrollable {
 	@Nullable
 	private IWidget content;
 	private float scrollPercentage;
@@ -27,7 +26,7 @@ public class ScrollableWidget extends WidgetGroup implements IScrollable {
 		if (content == null) {
 			return 0;
 		}
-		return (int) ((content.getHeight() - height) / (step));
+		return (int) ((content.getHeight() - getHeight()) / (step));
 	}
 
 	protected void movePercentage(float percentage) {
@@ -38,7 +37,7 @@ public class ScrollableWidget extends WidgetGroup implements IScrollable {
 	public void onScroll(int value) {
 		scrollPercentage = (value * step);
 		if (content != null) {
-			content.setOffset(0, -((int) scrollPercentage));
+			content.setYPosition(-((int) scrollPercentage));
 		}
 	}
 

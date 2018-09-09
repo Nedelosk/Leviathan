@@ -1,4 +1,4 @@
-package leviathan.gui.widget.layouts;
+package leviathan.gui.widget;
 
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -16,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import leviathan.api.ILayoutManager;
 import leviathan.api.Region;
 import leviathan.api.gui.GuiConstants;
 import leviathan.api.gui.IItemWidget;
@@ -23,7 +25,7 @@ import leviathan.api.gui.ILabelWidget;
 import leviathan.api.gui.ITextWidget;
 import leviathan.api.gui.ITextureWidget;
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.IWidgetGroup;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWidgetLayoutHelper;
 import leviathan.api.gui.IWindowWidget;
 import leviathan.api.gui.WidgetAlignment;
@@ -31,31 +33,34 @@ import leviathan.api.gui.style.ITextStyle;
 import leviathan.api.render.DrawMode;
 import leviathan.api.render.IDrawable;
 import leviathan.api.render.ISprite;
-import leviathan.gui.widget.ItemWidget;
-import leviathan.gui.widget.LabelWidget;
-import leviathan.gui.widget.SplitTextWidget;
-import leviathan.gui.widget.TextureWidget;
-import leviathan.gui.widget.Widget;
+import leviathan.gui.layouts.HorizontalLayout;
+import leviathan.gui.layouts.PaneLayout;
+import leviathan.gui.layouts.VerticalLayout;
+import leviathan.gui.layouts.WidgetLayoutHelper;
 import leviathan.utils.Drawable;
 
 
 @SideOnly(Side.CLIENT)
-public class WidgetGroup extends Widget implements IWidgetGroup {
+public class WidgetContainer extends Widget implements IWidgetContainer {
 	protected final List<IWidget> elements = new ArrayList<>();
+	@Nullable
+	protected ILayoutManager layoutManager;
 
-	public WidgetGroup(int xPos, int yPos, int width, int height) {
+	public WidgetContainer(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
 	}
 
 	public <E extends IWidget> E add(E element) {
 		elements.add(element);
 		element.setParent(this);
+		invalidate();
 		return element;
 	}
 
 	public <E extends IWidget> E remove(E element) {
 		elements.remove(element);
 		element.onDeletion();
+		invalidate();
 		return element;
 	}
 
@@ -86,13 +91,48 @@ public class WidgetGroup extends Widget implements IWidgetGroup {
 		return elements;
 	}
 
-	public Collection<IWidget> calculateHoverElements(Predicate<IWidget> filter) {
+	@Override
+	public Iterator<IWidget> iterator() {
+		return elements.iterator();
+	}
+
+	@Override
+	public ILayoutManager getLayout() {
+		return layoutManager;
+	}
+
+	@Override
+	public IWidgetContainer setLayout(@Nullable ILayoutManager layoutManager) {
+		this.layoutManager = layoutManager;
+		return this;
+	}
+
+	@Override
+	public void doLayout() {
+		if(layoutManager != null){
+			layoutManager.layoutWidget(this);
+		}
+	}
+
+	@Override
+	protected void doValidate() {
+		super.doValidate();
+		doLayout();
+		for(IWidget widget : elements){
+			widget.validate();
+		}
+	}
+
+	public Collection<IWidget> calculateHoverElements(Predicate<IWidget> filter, boolean onlyFirst) {
 		List<IWidget> widgets = new LinkedList<>();
 		Deque<IWidget> queue = this.calculateMousedOverElements();
 		while (!queue.isEmpty()) {
 			IWidget element = queue.removeFirst();
 			if (element.isEnabled() && element.isVisible() && filter.test(element)) {
 				widgets.add(element);
+				if(onlyFirst){
+					break;
+				}
 			}
 		}
 		return widgets;
@@ -139,8 +179,8 @@ public class WidgetGroup extends Widget implements IWidgetGroup {
 		}
 		IWindowWidget window = getWindow();
 		List<IWidget> widgets = new ArrayList<>();
-		if (element instanceof IWidgetGroup) {
-			IWidgetGroup group = (IWidgetGroup) element;
+		if (element instanceof IWidgetContainer) {
+			IWidgetContainer group = (IWidgetContainer) element;
 			boolean addChildren = true;
 			if (element.isCropped()) {
 				int relativeMouseX = window.getRelativeMouseX(element);
@@ -285,37 +325,32 @@ public class WidgetGroup extends Widget implements IWidgetGroup {
 	}
 
 	@Override
-	public AbstractWidgetLayout vertical(int xPos, int yPos, int width) {
-		return add(new VerticalLayout(xPos, yPos, width));
+	public IWidgetContainer container(int xPos, int yPos, int width, int height) {
+		return add(new WidgetContainer(xPos, yPos, width, height));
 	}
 
 	@Override
-	public AbstractWidgetLayout vertical(int width) {
-		return add(new VerticalLayout(0, 0, width));
+	public IWidgetContainer vertical(int xPos, int yPos, int width, int gap) {
+		return container(xPos, yPos, width, 0).setLayout(new VerticalLayout(gap));
 	}
 
 	@Override
-	public AbstractWidgetLayout horizontal(int xPos, int yPos, int height) {
-		return add(new HorizontalLayout(xPos, yPos, height));
+	public IWidgetContainer horizontal(int xPos, int yPos, int height, int gap) {
+		return container(xPos, yPos, 0, height).setLayout(new HorizontalLayout(gap));
 	}
 
 	@Override
-	public AbstractWidgetLayout horizontal(int height) {
-		return add(new HorizontalLayout(0, 0, height));
+	public IWidgetContainer pane(int xPos, int yPos, int width, int height) {
+		return container(xPos, yPos, width, height);
 	}
 
 	@Override
-	public WidgetGroup pane(int xPos, int yPos, int width, int height) {
-		return add(new PaneLayout(xPos, yPos, width, height));
+	public IWidgetContainer pane(int width, int height) {
+		return container(0, 0, width, height).setLayout(PaneLayout.INSTANCE);
 	}
 
 	@Override
-	public WidgetGroup pane(int width, int height) {
-		return add(new PaneLayout(0, 0, width, height));
-	}
-
-	@Override
-	public WidgetLayoutHelper layoutHelper(IWidgetLayoutHelper.LayoutFactory layoutFactory, int width, int height) {
+	public WidgetLayoutHelper layoutHelper(IWidgetLayoutHelper.ContainerFactory layoutFactory, int width, int height) {
 		return new WidgetLayoutHelper(layoutFactory, width, height, this);
 	}
 }

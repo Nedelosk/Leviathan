@@ -1,4 +1,4 @@
-package leviathan.gui.widget.layouts;
+package leviathan.gui.layouts;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -6,24 +6,23 @@ import java.util.Collection;
 import java.util.List;
 
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.IWidgetGroup;
-import leviathan.api.gui.IWidgetLayout;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWidgetLayoutHelper;
 import leviathan.api.gui.WidgetAlignment;
 
 public class WidgetLayoutHelper implements IWidgetLayoutHelper {
-	private final List<IWidgetLayout> layouts = new ArrayList<>();
-	private final LayoutFactory layoutFactory;
+	private final List<IWidgetContainer> layouts = new ArrayList<>();
+	private final ContainerFactory layoutFactory;
 	private final int width;
 	private final int height;
-	private final IWidgetGroup parent;
+	private final IWidgetContainer parent;
 	private int xOffset;
 	private int yOffset;
 	@Nullable
-	private IWidgetLayout currentLayout;
+	private IWidgetContainer currentLayout;
 	private boolean horizontal;
 
-	public WidgetLayoutHelper(LayoutFactory layoutFactory, int width, int height, IWidgetGroup parent) {
+	public WidgetLayoutHelper(ContainerFactory layoutFactory, int width, int height, IWidgetContainer parent) {
 		this.layoutFactory = layoutFactory;
 		this.width = width;
 		this.height = height;
@@ -36,8 +35,8 @@ public class WidgetLayoutHelper implements IWidgetLayoutHelper {
 	@Override
 	public boolean add(IWidget element) {
 		if (currentLayout == null) {
-			layouts.add(currentLayout = layoutFactory.createLayout(0, 0));
-			this.horizontal = currentLayout instanceof VerticalLayout;
+			layouts.add(currentLayout = layoutFactory.createContainer(0, 0));
+			this.horizontal = currentLayout.getLayout() instanceof VerticalLayout;
 		}
 		int groupWidth = currentLayout.getWidth();
 		int groupHeight = currentLayout.getHeight();
@@ -49,7 +48,7 @@ public class WidgetLayoutHelper implements IWidgetLayoutHelper {
 					return false;
 				}
 				xOffset += currentLayout.getWidth();
-				layouts.add(currentLayout = layoutFactory.createLayout(0, 0));
+				layouts.add(currentLayout = layoutFactory.createContainer(0, 0));
 				groupHeight = currentLayout.getHeight();
 			}
 			groupHeight += eleHeight;
@@ -60,7 +59,7 @@ public class WidgetLayoutHelper implements IWidgetLayoutHelper {
 					return false;
 				}
 				yOffset += currentLayout.getHeight();
-				layouts.add(currentLayout = layoutFactory.createLayout(0, 0));
+				layouts.add(currentLayout = layoutFactory.createContainer(0, 0));
 				groupWidth = currentLayout.getWidth();
 			}
 			groupWidth += eleWidth;
@@ -90,7 +89,7 @@ public class WidgetLayoutHelper implements IWidgetLayoutHelper {
 	}
 
 	@Override
-	public Collection<IWidgetLayout> layouts() {
+	public Collection<IWidgetContainer> layouts() {
 		return layouts;
 	}
 }

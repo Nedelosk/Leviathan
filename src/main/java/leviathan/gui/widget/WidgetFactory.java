@@ -1,13 +1,12 @@
 package leviathan.gui.widget;
 
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWidgetFactory;
 import leviathan.api.gui.style.ITextStyle;
 import leviathan.api.gui.style.TextStyleBuilder;
-import leviathan.gui.widget.layouts.AbstractWidgetLayout;
-import leviathan.gui.widget.layouts.HorizontalLayout;
-import leviathan.gui.widget.layouts.PaneLayout;
-import leviathan.gui.widget.layouts.VerticalLayout;
-import leviathan.gui.widget.layouts.WidgetGroup;
+import leviathan.gui.layouts.HorizontalLayout;
+import leviathan.gui.layouts.PaneLayout;
+import leviathan.gui.layouts.VerticalLayout;
 import leviathan.utils.ColourProperties;
 
 public class WidgetFactory implements IWidgetFactory {
@@ -29,17 +28,17 @@ public class WidgetFactory implements IWidgetFactory {
 	}
 
 	@Override
-	public AbstractWidgetLayout createVertical(int xPos, int yPos, int width) {
-		return new VerticalLayout(xPos, yPos, width);
+	public IWidgetContainer createVertical(int xPos, int yPos, int width, int gap) {
+		return new WidgetContainer(xPos, yPos, width, 0).setLayout(new VerticalLayout(gap));
 	}
 
 	@Override
-	public AbstractWidgetLayout createHorizontal(int xPos, int yPos, int height) {
-		return new HorizontalLayout(xPos, yPos, height);
+	public IWidgetContainer createHorizontal(int xPos, int yPos, int height, int gap) {
+		return new WidgetContainer(xPos, yPos, 0, height).setLayout(new HorizontalLayout(gap));
 	}
 
 	@Override
-	public WidgetGroup createPane(int xPos, int yPos, int width, int height) {
-		return new PaneLayout(xPos, yPos, width, height);
+	public IWidgetContainer createPane(int xPos, int yPos, int width, int height) {
+		return new WidgetContainer(xPos, yPos, width, height).setLayout(PaneLayout.INSTANCE);
 	}
 }

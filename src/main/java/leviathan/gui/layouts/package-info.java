@@ -1,7 +1,7 @@
 @ParametersAreNonnullByDefault
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package leviathan.gui.widget.layouts;
+package leviathan.gui.layouts;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

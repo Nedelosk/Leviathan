@@ -13,16 +13,16 @@ import leviathan.api.Region;
 import leviathan.api.WidgetTab;
 import leviathan.api.gui.GuiConstants;
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.IWidgetGroup;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWidgetType;
 import leviathan.api.gui.WidgetAlignment;
 import leviathan.api.gui.events.MouseEvent;
 import leviathan.api.render.DrawMode;
+import leviathan.gui.layouts.VerticalLayout;
 import leviathan.gui.widget.ColoredWidget;
 import leviathan.gui.widget.ScrollBarWidget;
 import leviathan.gui.widget.ScrollableWidget;
-import leviathan.gui.widget.layouts.VerticalLayout;
-import leviathan.gui.widget.layouts.WidgetGroup;
+import leviathan.gui.widget.WidgetContainer;
 import leviathan.gui.workspace.GuiWorkspace;
 import leviathan.utils.Drawable;
 import leviathan.utils.ResourceUtil;
@@ -38,7 +38,7 @@ public class WorkspaceCreator extends WorkspaceControl {
 
 	public WorkspaceCreator(GuiWorkspace creator) {
 		super(creator);
-		IWidgetGroup group = pane(8, 27, width - 1, height - 15);
+		IWidgetContainer group = pane(8, 27, getWidth() - 1, getHeight() - 15);
 		this.buttons = group.add(new Buttons());
 		scrollBar = add(new ScrollBarWidget(-4, -4, 3, 32, new Drawable(DrawMode.REPEAT, new Sprite(ResourceUtil.guiLocation("backgrounds.png"), 0, 64, 3, 5)), false, new Sprite(ResourceUtil.guiLocation("backgrounds.png"), 3, 64, 3, 5)));
 		scrollBar.setAlign(WidgetAlignment.BOTTOM_RIGHT);
@@ -57,8 +57,8 @@ public class WorkspaceCreator extends WorkspaceControl {
 
 	private void updateScroll() {
 		buttons.updateButtons();
-		scrollBar.setHeight(height - 31);
-		scrollable.setSize(width - 4, height - 29);
+		scrollBar.setHeight(getHeight() - 31);
+		scrollable.setSize(getWidth() - 4, getHeight() - 29);
 		int invisibleArea = scrollable.getInvisibleArea();
 		if (invisibleArea > 0) {
 			if (scrollBar.getBackground() != null) {
@@ -99,7 +99,7 @@ public class WorkspaceCreator extends WorkspaceControl {
 		}
 	}
 
-	private class Tabs extends WidgetGroup {
+	private class Tabs extends WidgetContainer {
 		private Tab selected;
 
 		public Tabs(int xPos, int yPos) {
@@ -121,7 +121,7 @@ public class WorkspaceCreator extends WorkspaceControl {
 		}
 	}
 
-	private class Tab extends WidgetGroup {
+	private class Tab extends WidgetContainer {
 		private final WidgetTab tab;
 		private final ColoredWidget colored;
 
@@ -136,7 +136,7 @@ public class WorkspaceCreator extends WorkspaceControl {
 				.filter(type -> type.getTab() == tab)
 				.collect(Collectors.toList());
 			addTooltip(tab.name());
-			colored = add(new ColoredWidget(0, 0, width, height, 0xFF939393));
+			colored = add(new ColoredWidget(0, 0, getWidth(), getHeight(), 0xFF939393));
 			label(tab.name(), -1, 8, WidgetAlignment.MIDDLE_CENTER, GuiConstants.DEFAULT_STYLE);
 			addListener(MouseEvent.MOUSE_DOWN, event -> tabs.select(this));
 		}
@@ -147,20 +147,20 @@ public class WorkspaceCreator extends WorkspaceControl {
 		}
 	}
 
-	private class Buttons extends VerticalLayout {
+	private class Buttons extends WidgetContainer {
 		@Nullable
 		private Button selected;
 
 		public Buttons() {
-			super(0, 0, 90 - 12);
-			setDistance(1);
+			super(0, 0, 90 - 12, 0);
+			setLayout(new VerticalLayout(1));
 		}
 
 		public void updateButtons() {
 			clear();
 			List<IWidgetType> types = tabs.selected.types;
 			for (int y = 0; y < types.size() / 4 + 1; y++) {
-				IWidgetGroup group = horizontal(18).setDistance(1);
+				IWidgetContainer group = horizontal(18, 1);
 				for (int x = 0; x < 4; x++) {
 					int index = y * 4 + x;
 					if (index < types.size()) {
@@ -171,7 +171,7 @@ public class WorkspaceCreator extends WorkspaceControl {
 		}
 	}
 
-	private class Button extends WidgetGroup {
+	private class Button extends WidgetContainer {
 		private final IWidgetType type;
 		private final IWidget selectionBackground;
 

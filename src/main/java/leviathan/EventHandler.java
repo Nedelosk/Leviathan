@@ -21,9 +21,7 @@ import leviathan.gui.widget.ItemWidget;
 import leviathan.gui.widget.LabelWidget;
 import leviathan.gui.widget.TextEditWidget;
 import leviathan.gui.widget.TextureWidget;
-import leviathan.gui.widget.layouts.HorizontalLayout;
-import leviathan.gui.widget.layouts.VerticalLayout;
-import leviathan.gui.widget.layouts.WidgetGroup;
+import leviathan.gui.widget.WidgetContainer;
 import leviathan.gui.workspace.GuiWorkspace;
 import leviathan.utils.Drawable;
 
@@ -57,9 +55,7 @@ public class EventHandler {
 		registry.register(new WidgetType("item", WidgetTab.OBJECTS, () -> new ItemWidget(0, 0, ItemStack.EMPTY)));
 		registry.register(WidgetType.BACKGROUND);
 		//groups
-		registry.register(new WidgetType("group", WidgetTab.GROUPS, () -> new WidgetGroup(0, 0, 16, 16), true));
-		registry.register(new WidgetType("group_vertical", WidgetTab.GROUPS, () -> new VerticalLayout(0, 0, 16), true));
-		registry.register(new WidgetType("group_horizontal", WidgetTab.GROUPS, () -> new HorizontalLayout(0, 0, 16), true));
+		registry.register(new WidgetType("group", WidgetTab.GROUPS, () -> new WidgetContainer(0, 0, 16, 16), true));
 		//registry.register();
 	}
 }

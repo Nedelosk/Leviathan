@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -41,29 +40,21 @@ public class Widget extends Gui implements IWidget {
 	/* Attributes - Final */
 	//Tooltip of the element
 	private final List<ITooltipSupplier> tooltipSuppliers = new ArrayList<>();
-	//Event handler of this element
-	private final Collection<Consumer<? extends JEGEvent>> eventHandlers = new ArrayList<>();
 	private final IEventSystem eventSystem;
 	/* Attributes - State*/
 	//Element Position
 	protected Region region;
-	protected Region regionAbsolute = Region.EMPTY;
+	private Region regionAbsolute = Region.EMPTY;
 
-	protected int xPos;
-	protected int yPos;
-	protected int xOffset;
-	protected int yOffset;
-	//Size of this element
-	protected int width;
-	protected int height;
 	//The start coordinates of the crop
-	protected Region croppedRegion = Region.EMPTY;
+	private Region croppedRegion = Region.EMPTY;
 	//The element to that the crop coordinates are relative to.
-	protected IWidget cropElement = EMPTY;
+	private IWidget cropElement = EMPTY;
 	//Element Alignment relative to the parent
 	private WidgetAlignment align = WidgetAlignment.TOP_LEFT;
-	protected boolean visible = true;
-	protected boolean enabled = true;
+	private boolean visible = true;
+	private boolean enabled = true;
+	private boolean valid;
 
 	//The element container that contains this element
 	@Nullable
@@ -76,10 +67,6 @@ public class Widget extends Gui implements IWidget {
 
 	public Widget(int xPos, int yPos, int width, int height) {
 		this.region = new Region(xPos, yPos, width, height);
-		this.xPos = xPos;
-		this.yPos = yPos;
-		this.width = width;
-		this.height = height;
 		this.eventSystem = new EventSystem();
 	}
 
@@ -138,8 +125,6 @@ public class Widget extends Gui implements IWidget {
 		Region oldRegion = this.region;
 		this.region = region;
 		this.regionAbsolute = Region.EMPTY;
-		this.width = region.getWidth();
-		this.height = region.getHeight();
 		onRegionChange(oldRegion, region);
 		if (hasWindow()) {
 			getWindow().dispatchEvent(new ElementEvent.RegionChange(this, oldRegion, region));
@@ -158,6 +143,26 @@ public class Widget extends Gui implements IWidget {
 	}
 
 	@Override
+	public void validate() {
+		if(!valid) {
+			doValidate();
+			valid = true;
+		}
+	}
+
+	protected void doValidate(){
+		//
+	}
+
+	@Override
+	public void invalidate() {
+		valid = false;
+		if(parent != null){
+			parent.invalidate();
+		}
+	}
+
+	@Override
 	public final int getX() {
 		int x = 0;
 		int parentWidth = parent != null ? parent.getWidth() : -1;
@@ -165,7 +170,7 @@ public class Widget extends Gui implements IWidget {
 		if (parentWidth >= 0 && parentWidth > w) {
 			x = (int) ((parentWidth - w) * align.getXOffset());
 		}
-		return region.getX() + x + xOffset;
+		return region.getX() + x;
 	}
 
 	@Override
@@ -176,7 +181,7 @@ public class Widget extends Gui implements IWidget {
 		if (parentHeight >= 0 && parentHeight > h) {
 			y = (int) ((parentHeight - h) * align.getYOffset());
 		}
-		return region.getY() + y + yOffset;
+		return region.getY() + y;
 	}
 
 	@Override
@@ -188,7 +193,7 @@ public class Widget extends Gui implements IWidget {
 				x += p.getX();
 				y += p.getY();
 			}
-			regionAbsolute = new Region(x, y, width + x, height + y);
+			regionAbsolute = new Region(x, y, region.getWidth() + x, region.getHeight() + y);
 		}
 		return regionAbsolute;
 	}
@@ -245,28 +250,17 @@ public class Widget extends Gui implements IWidget {
 
 	@Override
 	public void setHeight(int height) {
-		setSize(width, height);
+		setSize(region.getWidth(), height);
 	}
 
 	@Override
 	public void setWidth(int width) {
-		setSize(width, height);
+		setSize(width, region.getHeight());
 	}
 
 	@Override
 	public IWidget setSize(int width, int height) {
-		this.width = width;
-		this.height = height;
 		setRegion(region.withSize(width, height));
-		return this;
-	}
-
-	@Override
-	public IWidget setOffset(int xOffset, int yOffset) {
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
-		this.regionAbsolute = Region.EMPTY;
-		onRegionChange(region, region);
 		return this;
 	}
 
@@ -289,26 +283,22 @@ public class Widget extends Gui implements IWidget {
 
 	@Override
 	public void setXPosition(int xPos) {
-		setLocation(xPos, yPos);
+		setLocation(xPos, region.getY());
 	}
 
 	@Override
 	public void setYPosition(int yPos) {
-		setLocation(xPos, yPos);
+		setLocation(region.getX(), yPos);
 	}
 
 	@Override
 	public IWidget setLocation(int xPos, int yPos) {
-		this.xPos = xPos;
-		this.yPos = yPos;
 		setRegion(region.withPosition(xPos, yPos));
 		return this;
 	}
 
 	@Override
 	public IWidget setBounds(int xPos, int yPos, int width, int height) {
-		//setLocation(xPos, yPos);
-		//setSize(width, height);
 		setRegion(new Region(xPos, yPos, width, height));
 		return this;
 	}
@@ -531,8 +521,6 @@ public class Widget extends Gui implements IWidget {
 			.add("a", getAlign())
 			.add("v", isVisible())
 			.add("e", isEnabled())
-			.add("xO", xOffset)
-			.add("yO", yOffset)
 			.toString();
 	}
 

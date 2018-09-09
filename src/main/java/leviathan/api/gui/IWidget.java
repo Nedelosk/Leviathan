@@ -56,6 +56,10 @@ public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventS
 
 	void onParentRegionChange(Region oldRegion, Region newRegion);
 
+	void validate();
+
+	void invalidate();
+
 	/**
 	 * Sets the alignment of this element.
 	 */
@@ -116,8 +120,6 @@ public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventS
 	 */
 	IWidget setLocation(int xPos, int yPos);
 
-	IWidget setOffset(int xOffset, int yOffset);
-
 	/**
 	 * Sets the dimensions and position of this element.
 	 *
@@ -160,17 +162,17 @@ public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventS
 	/* Creation & Deletion */
 
 	/**
-	 * Called at {@link IWidgetGroup#add(IWidget)} after the element was added to the group and
+	 * Called at {@link IWidgetContainer#add(IWidget)} after the element was added to the group and
 	 * {@link #setParent(IWidget)} was called at the element.
 	 * <p>
-	 * Can be used to add other element to the element if the element is an {@link IWidgetGroup}.
+	 * Can be used to add other element to the element if the element is an {@link IWidgetContainer}.
 	 *
 	 * @param window
 	 */
 	void onCreation(IWindowWidget window);
 
 	/**
-	 * Called at {@link IWidgetGroup#remove(IWidget...)} after the element was removed from the group.
+	 * Called at {@link IWidgetContainer#remove(IWidget...)} after the element was removed from the group.
 	 */
 	void onDeletion();
 
@@ -297,9 +299,6 @@ public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventS
 	 * Receives an event and distributes them to the event handlers of this element.
 	 */
 	void receiveEvent(JEGEvent event);
-
-	default void updateElement(WidgetInfo info) {
-	}
 
 	/* Properties */
 	<V> void onValueChange(IProperty<V, IWidget> property, V oldValue, V value);

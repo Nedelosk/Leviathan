@@ -9,9 +9,10 @@ import net.minecraft.client.gui.FontRenderer;
 
 import leviathan.api.Region;
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.IWidgetGroup;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.WidgetAlignment;
 import leviathan.api.render.DrawMode;
+import leviathan.gui.layouts.VerticalLayout;
 import leviathan.gui.widget.ScrollBarWidget;
 import leviathan.gui.widget.ScrollableWidget;
 import leviathan.gui.workspace.GuiWorkspace;
@@ -25,16 +26,16 @@ import leviathan.utils.Sprite;
 public class WorkspaceTree extends WorkspaceControl implements ITreeListListener {
 	private final ScrollBarWidget scrollBar;
 	private final ScrollableWidget scrollable;
-	public final IWidgetGroup treeElements;
-	private IWidgetGroup dragContainer;
+	public final IWidgetContainer treeElements;
+	private IWidgetContainer dragContainer;
 
 	private final Map<String, WorkspaceTreeElement> elementByName = new HashMap<>();
 
 	public WorkspaceTree(GuiWorkspace creator) {
 		super(creator);
-		IWidgetGroup group = pane(2, 15, width - 8, height - 19);
+		IWidgetContainer group = pane(2, 15, getWidth() - 8, getHeight() - 19);
 		dragContainer = group.pane(group.getWidth(), group.getHeight());
-		treeElements = group.vertical(group.getWidth()).setDistance(3);
+		treeElements = group.container(0, group.getHeight()).setLayout(new VerticalLayout(2));
 		scrollBar = add(new ScrollBarWidget(-4, -4, 3, 32, new Drawable(DrawMode.REPEAT, new Sprite(ResourceUtil.guiLocation("backgrounds.png"), 0, 64, 3, 5)), false, new Sprite(ResourceUtil.guiLocation("backgrounds.png"), 3, 64, 3, 5)));
 		scrollBar.setAlign(WidgetAlignment.BOTTOM_RIGHT);
 		scrollable = group.add(new ScrollableWidget(0, 0, 400, 400));
@@ -48,8 +49,8 @@ public class WorkspaceTree extends WorkspaceControl implements ITreeListListener
 	}
 
 	private void updateScroll() {
-		scrollBar.setHeight(height - 19);
-		scrollable.setSize(width - 4, height - 19);
+		scrollBar.setHeight(getHeight() - 19);
+		scrollable.setSize(getWidth() - 4, getHeight() - 19);
 		int invisibleArea = scrollable.getInvisibleArea();
 		if (invisibleArea > 0) {
 			if (scrollBar.getBackground() != null) {
@@ -70,12 +71,12 @@ public class WorkspaceTree extends WorkspaceControl implements ITreeListListener
 		}
 	}
 
-	public void updateDragPosition(int x, int y) {
+	public void updateDragPosition(WorkspaceTreeElement treeElement, int x, int y) {
 		IWidget widget = dragContainer.getLastElement();
 		if (widget == null) {
 			return;
 		}
-		widget.setOffset(x, y);
+		widget.setLocation(treeElement.getAbsoluteX() - dragContainer.getAbsoluteX() + x, treeElement.getAbsoluteY() - dragContainer.getAbsoluteY() + y);
 	}
 
 	@Override
@@ -109,7 +110,7 @@ public class WorkspaceTree extends WorkspaceControl implements ITreeListListener
 		if (parentEntry == null) {
 			return;
 		}
-		IWidgetGroup parent = parentEntry.isRoot() ? treeElements : elementByName.get(parentName);
+		IWidgetContainer parent = parentEntry.isRoot() ? treeElements : elementByName.get(parentName);
 		if (parent == null) {
 			return;
 		}
@@ -120,13 +121,21 @@ public class WorkspaceTree extends WorkspaceControl implements ITreeListListener
 	@Override
 	public void onEntryTransfer(WidgetTreeList treeList, WidgetTreeEntry entry, WidgetTreeEntry oldParent, WidgetTreeEntry newParent) {
 		WorkspaceTreeElement element = elementByName.get(entry.getName());
-		WorkspaceTreeElement oldElement = elementByName.get(oldParent.getName());
-		WorkspaceTreeElement newElement = elementByName.get(newParent.getName());
+		IWidgetContainer oldElement = elementByName.get(oldParent.getName());
+		IWidgetContainer newElement = elementByName.get(newParent.getName());
 		if (element == null || oldElement == null && !oldParent.isRoot() || newElement == null && !oldParent.isRoot()) {
 			return;
 		}
+		if (oldElement == null) {
+			oldElement = treeElements;
+		}
+		if (newElement == null) {
+			newElement = treeElements;
+		}
 		oldElement.remove(element);
+		oldElement.validate();
 		newElement.add(element);
+		newElement.validate();
 	}
 
 	@Override

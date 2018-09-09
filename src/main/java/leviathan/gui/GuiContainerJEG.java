@@ -65,14 +65,14 @@ public class GuiContainerJEG extends GuiContainer implements IGuiSizable {
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 
-		window.actionOnHovered(widget -> widget.hasListener(MouseEvent.MOUSE_DOWN), widget -> widget.dispatchEvent(new MouseEvent(widget, MouseEvent.MOUSE_DOWN, mouseX, mouseY, mouseButton)));
+		window.actionOnHovered(widget -> widget.hasListener(MouseEvent.MOUSE_DOWN), widget -> widget.dispatchEvent(new MouseEvent(widget, MouseEvent.MOUSE_DOWN, mouseX, mouseY, mouseButton)), true);
 	}
 
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int mouseButton) {
 		super.mouseReleased(mouseX, mouseY, mouseButton);
 
-		window.actionOnHovered(widget -> widget.hasListener(MouseEvent.MOUSE_UP), widget -> widget.dispatchEvent(new MouseEvent(widget, MouseEvent.MOUSE_UP, mouseX, mouseY, mouseButton)));
+		window.actionOnHovered(widget -> widget.hasListener(MouseEvent.MOUSE_UP), widget -> widget.dispatchEvent(new MouseEvent(widget, MouseEvent.MOUSE_UP, mouseX, mouseY, mouseButton)), true);
 	}
 
 	@Override

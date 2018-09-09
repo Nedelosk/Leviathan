@@ -67,7 +67,7 @@ public class I18N {
 	}
 
 	@SuppressWarnings("NullableProblems")
-	@SidedProxy(clientSide = "jeg.proxy.I18NClient", serverSide = "jeg.proxy.I18NServer", modId = Constants.MOD_ID)
+	@SidedProxy(clientSide = "leviathan.proxy.I18NClient", serverSide = "leviathan.proxy.I18NServer", modId = Constants.MOD_ID)
 	private static I18NProxy proxy;
 
 	@SuppressWarnings("ConstantConditions")

@@ -44,7 +44,7 @@ public class SplitTextWidget extends Widget implements ITextWidget {
 		boolean uni = FONT_RENDERER.getUnicodeFlag();
 		FONT_RENDERER.setUnicodeFlag(style.isUnicode());
 		lines.clear();
-		lines.addAll(FONT_RENDERER.listFormattedStringToWidth(GuiUtil.getFormattedString(style, rawText), width));
+		lines.addAll(FONT_RENDERER.listFormattedStringToWidth(GuiUtil.getFormattedString(style, rawText), getWidth()));
 		FONT_RENDERER.setUnicodeFlag(uni);
 		setHeight(lines.size() * FONT_RENDERER.FONT_HEIGHT);
 		return this;
@@ -61,7 +61,7 @@ public class SplitTextWidget extends Widget implements ITextWidget {
 		FONT_RENDERER.setUnicodeFlag(style.isUnicode());
 		int posY = 0;
 		for (String text : lines) {
-			int posX = width - FONT_RENDERER.getStringWidth(text);
+			int posX = getWidth() - FONT_RENDERER.getStringWidth(text);
 			posX *= getAlign().getXOffset();
 			FONT_RENDERER.drawString(text, posX, posY, style.getColor());
 			posY += FONT_RENDERER.FONT_HEIGHT;

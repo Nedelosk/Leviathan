@@ -11,8 +11,7 @@ import net.minecraft.client.gui.FontRenderer;
 
 import leviathan.api.Region;
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.IWidgetGroup;
-import leviathan.api.gui.IWidgetLayout;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.WidgetAlignment;
 import leviathan.api.properties.IProperty;
 import leviathan.api.properties.IPropertyCollection;
@@ -20,7 +19,7 @@ import leviathan.api.render.DrawMode;
 import leviathan.gui.widget.ColoredWidget;
 import leviathan.gui.widget.ScrollBarWidget;
 import leviathan.gui.widget.ScrollableWidget;
-import leviathan.gui.widget.layouts.PaneLayout;
+import leviathan.gui.widget.WidgetContainer;
 import leviathan.gui.workspace.GuiWorkspace;
 import leviathan.gui.workspace.ITreeListListener;
 import leviathan.gui.workspace.WidgetTreeEntry;
@@ -31,15 +30,15 @@ import leviathan.utils.Sprite;
 
 public class WorkspaceInspector extends WorkspaceControl implements ITreeListListener {
 
-	public final IWidgetLayout properties;
+	public final IWidgetContainer properties;
 	private final ScrollBarWidget scrollBar;
 	private final ScrollableWidget scrollable;
 
 	public WorkspaceInspector(GuiWorkspace creator) {
 		super(creator);
 		setName("inspector");
-		IWidgetGroup propertyPane = pane(4, 15, width, height);
-		this.properties = propertyPane.vertical(0).setDistance(6);
+		IWidgetContainer propertyPane = pane(4, 15, getWidth(), getHeight());
+		this.properties = propertyPane.vertical(0,6);
 		scrollBar = add(new ScrollBarWidget(-4, -4, 3, 32, new Drawable(DrawMode.REPEAT, new Sprite(ResourceUtil.guiLocation("backgrounds.png"), 0, 64, 3, 5)), false, new Sprite(ResourceUtil.guiLocation("backgrounds.png"), 3, 64, 3, 5)));
 		scrollBar.setAlign(WidgetAlignment.BOTTOM_RIGHT);
 		scrollBar.setVisible(true);
@@ -54,8 +53,8 @@ public class WorkspaceInspector extends WorkspaceControl implements ITreeListLis
 	}
 
 	private void updateScrollWidgets() {
-		scrollBar.setHeight(height - 19);
-		scrollable.setSize(width - 4, height - 15);
+		scrollBar.setHeight(getHeight() - 19);
+		scrollable.setSize(getWidth() - 4, getHeight() - 15);
 		int invisibleArea = scrollable.getInvisibleArea();
 		if (!properties.getElements().isEmpty() && invisibleArea > 0) {
 			if (scrollBar.getBackground() != null) {
@@ -114,6 +113,7 @@ public class WorkspaceInspector extends WorkspaceControl implements ITreeListLis
 				}*/
 				properties.add(addProperty(property));
 			}
+			properties.validate();
 		}
 		updateScrollWidgets();
 	}
@@ -121,13 +121,14 @@ public class WorkspaceInspector extends WorkspaceControl implements ITreeListLis
 	protected IWidget addProperty(IProperty property) {
 		if (property.hasChildren()) {
 			Collection<IProperty> children = property.getChildren();
-			IWidgetGroup subtypeGroup = new PaneLayout(82, 0);
+			IWidgetContainer subtypeGroup = new WidgetContainer(0, 0, 82, 0);
 			subtypeGroup.add(new ColoredWidget(-5, 0, 82, 24 * children.size() + 12, 0xFF606060));
-			IWidgetGroup vertical = subtypeGroup.vertical(82);
+			IWidgetContainer vertical = subtypeGroup.vertical(82);
 			vertical.label(WordUtils.capitalize(property.getName()), WidgetAlignment.TOP_CENTER).setYPosition(2);
 			for (IProperty child : children) {
 				vertical.add(addProperty(child));
 			}
+			vertical.validate();
 			subtypeGroup.setHeight(vertical.getHeight());
 			return subtypeGroup;
 		}

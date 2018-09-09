@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import leviathan.api.gui.IWidget;
-import leviathan.gui.widget.layouts.WidgetGroup;
+import leviathan.gui.widget.WidgetContainer;
 
-public class WorkspaceCanvas extends WidgetGroup {
+public class WorkspaceCanvas extends WidgetContainer {
 	private Collection<IWidget> objects = new ArrayList<>();
 
 	public WorkspaceCanvas() {

@@ -1,9 +1,9 @@
 package leviathan.gui.workspace.widgets;
 
-import leviathan.gui.widget.layouts.WidgetGroup;
+import leviathan.gui.widget.WidgetContainer;
 import leviathan.gui.workspace.GuiWorkspace;
 
-public class WorkspaceControl extends WidgetGroup {
+public class WorkspaceControl extends WidgetContainer {
 	protected final GuiWorkspace creator;
 
 	public WorkspaceControl(GuiWorkspace creator) {
