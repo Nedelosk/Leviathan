@@ -1,0 +1,13 @@
+normal {
+	background('minecraft:textures/gui/furnace.png')
+	size(166, 176)
+	container {
+		slot(0, 0)
+		slot(0, 0)
+		slot(0, 0, 'output') 
+	}
+	label("Furnace") {
+		align('center')
+	}
+	
+}

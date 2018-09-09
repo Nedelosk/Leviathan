@@ -1,14 +1,23 @@
-.gradle
-/build/
+# everything
+/*
 
-# Ignore Gradle GUI config
-gradle-app.setting
+# folders
+!/.github
+!/forestry_techne
+!/gradle/wrapper
+!/src
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Cache of project
-.gradletasknamecache
-
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
+# files
+!/.gitignore
+!/CLA.txt
+!/CONTRIBUTING.md
+!/LICENSE.txt
+!/license-header.txt
+!/README.md
+!/gradle.properties
+!/build.gradle
+!/build.xml
+!/gradlew
+!/gradlew.bat
+!/cla-signatures.txt
+!/formatting-settings.jar

@@ -1,0 +1,53 @@
+package leviathan.proxy;
+
+import net.minecraft.client.resources.I18n;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.ResourceLocation;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import leviathan.utils.Log;
+
+@SideOnly(Side.CLIENT)
+public class I18NClient implements I18NProxy {
+
+	private final boolean devEnvironment = Launch.blackboard.get("fml.deobfuscatedEnvironment") == Boolean.TRUE;
+
+	public String localiseOrBlank(String key) {
+		String trans = localise(key);
+		return trans.equals(key) ? "" : trans;
+	}
+
+	public String localise(String key) {
+		if (I18n.hasKey(key)) {
+			return I18n.format(key);
+		}
+		if (devEnvironment) {
+			Log.warning("Key not localized: " + key);
+		}
+		return key;
+	}
+
+	public String localise(ResourceLocation key) {
+		return this.localise(key.getResourceDomain() + '.' + key.getResourcePath());
+	}
+
+	public boolean canLocalise(String key) {
+		return I18n.hasKey(key);
+	}
+
+	public String localise(String key, Object... format) {
+		if (I18n.hasKey(key)) {
+			return I18n.format(key, format);
+		}
+		if (devEnvironment) {
+			Log.warning("Key(format) not localized: " + key);
+		}
+		return key;
+	}
+
+	public String localise(ResourceLocation key, Object... format) {
+		return this.localise(key.getResourceDomain() + '.' + key.getResourcePath(), format);
+	}
+}
