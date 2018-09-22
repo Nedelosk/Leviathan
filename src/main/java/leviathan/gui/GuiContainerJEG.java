@@ -12,8 +12,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.events.KeyEvent;
-import leviathan.api.gui.events.MouseEvent;
+import leviathan.api.events.KeyEvent;
+import leviathan.api.events.MouseEvent;
 import leviathan.gui.widget.Window;
 import leviathan.utils.ColourProperties;
 import leviathan.utils.GuiUtil;

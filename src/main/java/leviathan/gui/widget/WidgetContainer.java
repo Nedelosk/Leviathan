@@ -18,8 +18,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import leviathan.api.ILayoutManager;
-import leviathan.api.Region;
-import leviathan.api.gui.GuiConstants;
+import leviathan.api.geometry.Region;
+import leviathan.api.text.GuiConstants;
 import leviathan.api.gui.IItemWidget;
 import leviathan.api.gui.ILabelWidget;
 import leviathan.api.gui.ITextWidget;
@@ -29,7 +29,7 @@ import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWidgetLayoutHelper;
 import leviathan.api.gui.IWindowWidget;
 import leviathan.api.gui.WidgetAlignment;
-import leviathan.api.gui.style.ITextStyle;
+import leviathan.api.text.ITextStyle;
 import leviathan.api.render.DrawMode;
 import leviathan.api.render.IDrawable;
 import leviathan.api.render.ISprite;
@@ -123,6 +123,36 @@ public class WidgetContainer extends Widget implements IWidgetContainer {
 		}
 	}
 
+	/*@Override
+	public int getRelativeMouseX(@Nullable IWidget element) {
+		Preconditions.checkNotNull(parent, "Failed to find the top level widget of the widget ('" + name + "'). ");
+		int relativeX = parent.getRelativeMouseX(this);
+		if (element == null) {
+			return relativeX;
+		}
+		return relativeX - element.getX();
+	}
+
+	@Override
+	public int getRelativeMouseY(@Nullable IWidget element) {
+		Preconditions.checkNotNull(parent, "Failed to find the top level widget of the widget ('" + name + "'). ");
+		int relativeY = parent.getRelativeMouseY(this);
+		if (element == null) {
+			return relativeY;
+		}
+		return relativeY - element.getY();
+	}
+
+	@Override
+	public Point getRelativeMousePosition(@Nullable IWidget element) {
+		Preconditions.checkNotNull(parent, "Failed to find the top level widget of the widget ('" + name + "'). ");
+		Point relativePosition = parent.getRelativeMousePosition(this);
+		if (element == null) {
+			return relativePosition;
+		}
+		return relativePosition.subtract(element.getPosition());
+	}*/
+
 	public Collection<IWidget> calculateHoverElements(Predicate<IWidget> filter, boolean onlyFirst) {
 		List<IWidget> widgets = new LinkedList<>();
 		Deque<IWidget> queue = this.calculateMousedOverElements();
@@ -188,7 +218,8 @@ public class WidgetContainer extends Widget implements IWidgetContainer {
 				IWidget cropRelative = !element.getCropElement().isEmpty() ? element.getCropElement() : this;
 				int posX = cropRelative.getAbsoluteX() - element.getAbsoluteX();
 				int posY = cropRelative.getAbsoluteY() - element.getAbsoluteY();
-				addChildren = relativeMouseX >= posX && relativeMouseY >= posY && relativeMouseX <= posX + element.getCropWidth() && relativeMouseY <= posY + element.getCropHeight();
+				Region cropRegion = element.getCroppedRegion();
+				addChildren = relativeMouseX >= posX && relativeMouseY >= posY && relativeMouseX <= posX + cropRegion.getWidth() && relativeMouseY <= posY + cropRegion.getHeight();
 			}
 			if (addChildren) {
 				ListIterator<IWidget> iterator = group.getElements().listIterator(group.getElements().size());

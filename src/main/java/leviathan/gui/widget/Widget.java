@@ -15,18 +15,20 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import leviathan.api.Region;
-import leviathan.api.gui.ICroppable;
+import leviathan.api.geometry.Point;
+import leviathan.api.geometry.RectTransform;
+import leviathan.api.geometry.Region;
 import leviathan.api.gui.IWidget;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWindowWidget;
 import leviathan.api.gui.WidgetAlignment;
-import leviathan.api.gui.events.ElementEvent;
-import leviathan.api.gui.events.EventDestination;
-import leviathan.api.gui.events.EventKey;
-import leviathan.api.gui.events.IEventListener;
-import leviathan.api.gui.events.IEventSystem;
-import leviathan.api.gui.events.JEGEvent;
-import leviathan.api.gui.tooltip.ITooltipSupplier;
+import leviathan.api.events.ElementEvent;
+import leviathan.api.events.EventDestination;
+import leviathan.api.events.EventKey;
+import leviathan.api.events.IEventListener;
+import leviathan.api.events.IEventSystem;
+import leviathan.api.events.JEGEvent;
+import leviathan.api.tooltip.ITooltipSupplier;
 import leviathan.api.properties.IProperty;
 import leviathan.api.properties.IPropertyCollection;
 import leviathan.api.properties.PropertyCollection;
@@ -37,15 +39,13 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class Widget extends Gui implements IWidget {
 	public static final IWidget EMPTY = EmptyWidget.INSTANCE;
-	/* Attributes - Final */
 	//Tooltip of the element
 	private final List<ITooltipSupplier> tooltipSuppliers = new ArrayList<>();
 	private final IEventSystem eventSystem;
-	/* Attributes - State*/
 	//Element Position
 	protected Region region;
+	protected RectTransform transform;
 	private Region regionAbsolute = Region.EMPTY;
-
 	//The start coordinates of the crop
 	private Region croppedRegion = Region.EMPTY;
 	//The element to that the crop coordinates are relative to.
@@ -55,10 +55,9 @@ public class Widget extends Gui implements IWidget {
 	private boolean visible = true;
 	private boolean enabled = true;
 	private boolean valid;
-
 	//The element container that contains this element
 	@Nullable
-	protected IWidget parent;
+	protected IWidgetContainer parent;
 	protected String name;
 
 	public Widget(int width, int height) {
@@ -67,16 +66,18 @@ public class Widget extends Gui implements IWidget {
 
 	public Widget(int xPos, int yPos, int width, int height) {
 		this.region = new Region(xPos, yPos, width, height);
+		this.transform = new RectTransform(this, region);
 		this.eventSystem = new EventSystem();
 	}
 
+	//TODO: Add 'cropped_region' and 'crop_element' back
 	@Override
 	public void addProperties(IPropertyCollection collection) {
 		collection.addProperties(IWidget.class, creator ->
 			creator.add("name", "Element", IWidget::getName, IWidget::setName, JEGSerializers.STRING)
 				.add("region", Region.DEFAULT, IWidget::getRegion, IWidget::setRegion, JEGSerializers.REGION)
-				.add("cropped_region", Region.EMPTY, ICroppable::getCroppedRegion, ICroppable::setCroppedRegion, JEGSerializers.REGION)
-				.add("crop_element", EMPTY, IWidget::getCropElement, IWidget::setCropElement, JEGSerializers.WIDGET)
+				/*.add("cropped_region", Region.EMPTY, ICroppable::getCroppedRegion, ICroppable::setCroppedRegion, JEGSerializers.REGION)
+				.add("crop_element", EMPTY, IWidget::getCropElement, IWidget::setCropElement, JEGSerializers.WIDGET)*/
 				.add("alignment", WidgetAlignment.TOP_LEFT, IWidget::getAlign, IWidget::setAlign, JEGSerializers.ALIGNMENT)
 				.add("visible", true, IWidget::getVisible, IWidget::setVisible, JEGSerializers.BOOLEAN)
 				.add("enabled", true, IWidget::getEnabled, IWidget::setEnabled, JEGSerializers.BOOLEAN));
@@ -125,6 +126,8 @@ public class Widget extends Gui implements IWidget {
 		Region oldRegion = this.region;
 		this.region = region;
 		this.regionAbsolute = Region.EMPTY;
+		transform.setPosition(region.getPosition().toVec());
+		transform.setSizeDelta(region.getSize().toVec());
 		onRegionChange(oldRegion, region);
 		if (hasWindow()) {
 			getWindow().dispatchEvent(new ElementEvent.RegionChange(this, oldRegion, region));
@@ -140,6 +143,11 @@ public class Widget extends Gui implements IWidget {
 	public void onParentRegionChange(Region oldRegion, Region newRegion) {
 		regionAbsolute = Region.EMPTY;
 		onRegionChange(region, region);
+	}
+
+	@Override
+	public void onTransformChange() {
+
 	}
 
 	@Override
@@ -193,7 +201,7 @@ public class Widget extends Gui implements IWidget {
 				x += p.getX();
 				y += p.getY();
 			}
-			regionAbsolute = new Region(x, y, region.getWidth() + x, region.getHeight() + y);
+			regionAbsolute = region.withPosition(x, y);
 		}
 		return regionAbsolute;
 	}
@@ -336,29 +344,13 @@ public class Widget extends Gui implements IWidget {
 		return cropElement;
 	}
 
-	public int getCropX() {
-		return croppedRegion.getX();
-	}
-
-	public int getCropY() {
-		return croppedRegion.getY();
-	}
-
-	public int getCropWidth() {
-		return croppedRegion.getWidth();
-	}
-
-	public int getCropHeight() {
-		return croppedRegion.getHeight();
-	}
-
 	@Override
 	public Region getCroppedRegion() {
 		return croppedRegion;
 	}
 
 	public boolean isCropped() {
-		return !cropElement.isEmpty() && !croppedRegion.isEmpty();
+		return !croppedRegion.isEmpty();
 	}
 
 	@Override
@@ -384,7 +376,16 @@ public class Widget extends Gui implements IWidget {
 		if (!isVisible()) {
 			return false;
 		}
-		return mouseX >= 0 && mouseX < getWidth() && mouseY >= 0 && mouseY < getHeight();
+		return isMouseOver(new Point(mouseX, mouseY));
+	}
+
+	@Override
+	public boolean isMouseOver(Point mouse) {
+		if (!isVisible()) {
+			return false;
+		}
+		/*region*/
+		return transform.contains(mouse);
 	}
 
 	@Override
@@ -392,14 +393,18 @@ public class Widget extends Gui implements IWidget {
 		IWindowWidget window = getWindow();
 		int mouseX = window.getRelativeMouseX(this);
 		int mouseY = window.getRelativeMouseY(this);
+		Point mousePosition = window.getRelativeMousePosition(this);
 		if (!isCropped()) {
-			return isMouseOver(mouseX, mouseY);
+			return isMouseOver(mousePosition);
 		}
-		IWidget cropRelative = !cropElement.isEmpty() ? cropElement : this;
-		int posX = cropRelative.getAbsoluteX() - this.getAbsoluteX();
-		int posY = cropRelative.getAbsoluteY() - this.getAbsoluteY();
-		boolean inCrop = mouseX >= posX && mouseY >= posY && mouseX <= posX + croppedRegion.getWidth() && mouseY <= posY + croppedRegion.getHeight();
-		return inCrop && isMouseOver(mouseX, mouseY);
+		IWidget cropRelative = getCropRelative();
+		Point relativePosition = cropRelative.getAbsolutePosition().subtract(getAbsolutePosition());
+		//int posX = cropRelative.getAbsoluteX() - this.getAbsoluteX();
+		//int posY = cropRelative.getAbsoluteY() - this.getAbsoluteY();
+		Region cropRegion = croppedRegion.withPosition(relativePosition);
+		//boolean inCrop = mouseX >= posX && mouseY >= posY && mouseX <= posX + croppedRegion.getWidth() && mouseY <= posY + croppedRegion.getHeight();
+		//return inCrop && isMouseOver(mouseX, mouseY);
+		return cropRegion.contains(mousePosition) && isMouseOver(mousePosition);
 	}
 
 	/**
@@ -451,19 +456,31 @@ public class Widget extends Gui implements IWidget {
 
 	@Nullable
 	@Override
-	public IWidget getParent() {
+	public IWidgetContainer getParent() {
 		return parent;
 	}
 
 	@Override
-	public IWidget setParent(@Nullable IWidget parent) {
+	public IWidget setParent(@Nullable IWidgetContainer parent) {
 		this.parent = parent;
+		this.regionAbsolute = Region.EMPTY;
+		invalidate();
 		if (hasWindow()) {
 			IWindowWidget window = getWindow();
 			onCreation(window);
 			window.dispatchEvent(new ElementEvent(this, ElementEvent.CREATION));
 		}
+		if(parent == null){
+			transform.setParent(null);
+		}else{
+			transform.setParent(parent.getTransform());
+		}
 		return this;
+	}
+
+	@Override
+	public RectTransform getTransform() {
+		return transform;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package leviathan;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -12,7 +13,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import leviathan.api.WidgetTab;
-import leviathan.api.gui.GuiConstants;
+import leviathan.api.text.GuiConstants;
 import leviathan.api.gui.IWidgetType;
 import leviathan.api.gui.WidgetAlignment;
 import leviathan.api.gui.WidgetType;
@@ -22,7 +23,7 @@ import leviathan.gui.widget.LabelWidget;
 import leviathan.gui.widget.TextEditWidget;
 import leviathan.gui.widget.TextureWidget;
 import leviathan.gui.widget.WidgetContainer;
-import leviathan.gui.workspace.GuiWorkspace;
+import leviathan.gui.GuiWorkspace;
 import leviathan.utils.Drawable;
 
 public class EventHandler {
@@ -30,7 +31,9 @@ public class EventHandler {
 	@SubscribeEvent
 	public void onGui(GuiScreenEvent.InitGuiEvent event) {
 		if (event.getGui() instanceof GuiMainMenu) {
-			event.getButtonList().add(new GuiButton(10, event.getGui().width / 2 + 102, event.getGui().height / 2 + 32, 20, 20, "G"));
+			GuiScreen screen = event.getGui();
+			int j = screen.height / 4 + 48;
+			event.getButtonList().add(new GuiButton(10, screen.width / 2 + 104, j + 72 + 12, 20, 20, "GUI"));
 		}
 	}
 

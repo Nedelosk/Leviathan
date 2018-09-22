@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.events.KeyEvent;
-import leviathan.api.gui.events.MouseEvent;
+import leviathan.api.events.KeyEvent;
+import leviathan.api.events.MouseEvent;
 import leviathan.gui.widget.Window;
 import leviathan.utils.GuiUtil;
 import org.lwjgl.input.Mouse;

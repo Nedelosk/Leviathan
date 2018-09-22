@@ -1,6 +1,6 @@
 package leviathan.api.gui;
 
-import leviathan.api.gui.style.ITextStyle;
+import leviathan.api.text.ITextStyle;
 
 /**
  * A label element that displays and contains one single line of text

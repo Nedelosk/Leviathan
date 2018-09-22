@@ -8,7 +8,7 @@ import leviathan.api.WidgetTab;
 import leviathan.api.render.DrawMode;
 import leviathan.gui.widget.TextureWidget;
 import leviathan.gui.widget.Widget;
-import leviathan.gui.workspace.GuiWorkspace;
+import leviathan.gui.GuiWorkspace;
 import leviathan.utils.Drawable;
 
 public class WidgetType extends IForgeRegistryEntry.Impl<IWidgetType> implements IWidgetType {

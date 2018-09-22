@@ -3,10 +3,10 @@ package leviathan.gui.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import leviathan.api.gui.events.EventKey;
-import leviathan.api.gui.events.IEventListener;
-import leviathan.api.gui.events.IEventTrigger;
-import leviathan.api.gui.events.JEGEvent;
+import leviathan.api.events.EventKey;
+import leviathan.api.events.IEventListener;
+import leviathan.api.events.IEventTrigger;
+import leviathan.api.events.JEGEvent;
 
 public class EventTrigger<E extends JEGEvent> implements IEventTrigger<E> {
 

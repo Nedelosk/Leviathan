@@ -3,7 +3,7 @@ package leviathan.api.gui;
 import java.util.Collection;
 import java.util.Map;
 
-import leviathan.api.gui.style.ITextStyle;
+import leviathan.api.text.ITextStyle;
 
 /**
  * A element that displays or contains one ore more lines of text.

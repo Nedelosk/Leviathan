@@ -3,10 +3,10 @@ package leviathan.gui.widget;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-import leviathan.api.Region;
+import leviathan.api.geometry.Region;
 import leviathan.api.gui.IScrollable;
 import leviathan.api.gui.IWidget;
-import leviathan.api.gui.events.MouseEvent;
+import leviathan.api.events.MouseEvent;
 
 public class ScrollableWidget extends WidgetContainer implements IScrollable {
 	@Nullable

@@ -7,17 +7,13 @@ package leviathan.api.gui;
 
 import javax.annotation.Nullable;
 
-import leviathan.api.Region;
+import leviathan.api.geometry.Region;
 
 public interface ICroppable {
 	/**
 	 * Sets the cropped zone of this element and the element the zone is relative to.
 	 *
 	 * @param cropElement The element the zone is relative to.
-	 * @param cropX       The x start coordinate of the zone.
-	 * @param cropY       The y start coordinate of the zone.
-	 * @param cropWidth   The width of the zone.
-	 * @param cropHeight  The height of the zone.
 	 */
 	void setCroppedZone(@Nullable IWidget cropElement, Region coppedRegion);
 
@@ -29,26 +25,6 @@ public interface ICroppable {
 	 * @return The element the cropped zone is relative to.
 	 */
 	IWidget getCropElement();
-
-	/**
-	 * @return The x start coordinate of the cropped zone.
-	 */
-	int getCropX();
-
-	/**
-	 * @return The y start coordinate of the cropped zone.
-	 */
-	int getCropY();
-
-	/**
-	 * @return The width of the cropped zone.
-	 */
-	int getCropWidth();
-
-	/**
-	 * @return The height of the cropped zone.
-	 */
-	int getCropHeight();
 
 	Region getCroppedRegion();
 

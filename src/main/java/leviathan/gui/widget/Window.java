@@ -21,14 +21,15 @@ import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import leviathan.api.geometry.Point;
 import leviathan.api.gui.IWidget;
 import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWindowWidget;
-import leviathan.api.gui.events.ElementEvent;
-import leviathan.api.gui.events.EventDestination;
-import leviathan.api.gui.events.FocusEvent;
-import leviathan.api.gui.events.JEGEvent;
-import leviathan.api.gui.events.MouseEvent;
+import leviathan.api.events.ElementEvent;
+import leviathan.api.events.EventDestination;
+import leviathan.api.events.FocusEvent;
+import leviathan.api.events.JEGEvent;
+import leviathan.api.events.MouseEvent;
 import leviathan.gui.IGuiSizable;
 import org.lwjgl.input.Mouse;
 
@@ -54,6 +55,7 @@ public class Window<G extends GuiScreen & IGuiSizable> extends WidgetContainer i
 
 	public Window(int width, int height, G gui) {
 		super(0, 0, width, height);
+		setName("window");
 		this.gui = gui;
 		addListener(ElementEvent.DELETION, deletion -> {
 			IWidget element = deletion.getSource();
@@ -98,13 +100,8 @@ public class Window<G extends GuiScreen & IGuiSizable> extends WidgetContainer i
 	}
 
 	@Override
-	public Window<G> setParent(@Nullable IWidget parent) {
+	public IWidget setParent(@Nullable IWidgetContainer parent) {
 		return this;
-	}
-
-	@Override
-	public boolean hasParent() {
-		return false;
 	}
 
 	@Override
@@ -282,6 +279,42 @@ public class Window<G extends GuiScreen & IGuiSizable> extends WidgetContainer i
 		return mouseY;
 	}
 
+	/*@Override
+	public int getRelativeMouseX(@Nullable IWidget element) {
+		if (element == null) {
+			return mouseX;
+		}
+		IWidgetContainer parent = element.getParent();
+		if(parent != null && parent != this){
+			return parent.getRelativeMouseX(element);
+		}
+		return mouseX - element.getX();
+	}
+
+	@Override
+	public int getRelativeMouseY(@Nullable IWidget element) {
+		if (element == null) {
+			return mouseY;
+		}
+		IWidgetContainer parent = element.getParent();
+		if(parent != null && parent != this){
+			return parent.getRelativeMouseY(element);
+		}
+		return mouseY - element.getY();
+	}
+
+	@Override
+	public Point getRelativeMousePosition(@Nullable IWidget element) {
+		if (element == null) {
+			return Point.ORIGIN;
+		}
+		IWidgetContainer parent = element.getParent();
+		if(parent != null && parent != this){
+			return parent.getRelativeMousePosition(element);
+		}
+		return new Point(mouseX, mouseY).subtract(element.getPosition());
+	}*/
+
 	@Override
 	public int getRelativeMouseX(@Nullable IWidget element) {
 		if (element == null) {
@@ -296,6 +329,14 @@ public class Window<G extends GuiScreen & IGuiSizable> extends WidgetContainer i
 			return mouseY;
 		}
 		return mouseY - element.getAbsoluteY();
+	}
+
+	@Override
+	public Point getRelativeMousePosition(@Nullable IWidget element) {
+		if (element == null) {
+			return Point.ORIGIN;
+		}
+		return new Point(mouseX, mouseY).subtract(element.getAbsolutePosition());
 	}
 
 	/* Gui Screen */
@@ -376,7 +417,9 @@ public class Window<G extends GuiScreen & IGuiSizable> extends WidgetContainer i
 	@Override
 	public void dispatchEvent(JEGEvent event, EventDestination destination) {
 		try {
-			destination.sendEvent(this, event);
+			if(event.getSource() != this) {
+				destination.sendEvent(this, event);
+			}
 			destination.sendEvent(event.getSource(), event);
 		} catch (Exception e) {
 			StringBuilder builder = new StringBuilder("/-----------------------------------------------------/").append('\n')

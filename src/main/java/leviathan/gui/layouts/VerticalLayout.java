@@ -1,7 +1,7 @@
 package leviathan.gui.layouts;
 
 import leviathan.api.ILayoutManager;
-import leviathan.api.Region;
+import leviathan.api.geometry.Region;
 import leviathan.api.gui.IWidget;
 import leviathan.api.gui.IWidgetContainer;
 

@@ -1,7 +1,7 @@
 package leviathan.api;
 
-import leviathan.api.gui.IWidgetContainer;
+import leviathan.api.widgets.IContainer;
 
 public interface ILayoutManager {
-	void layoutWidget(IWidgetContainer layout);
+	void layoutWidget(IContainer layout);
 }

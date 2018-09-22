@@ -11,7 +11,7 @@ import net.minecraft.client.gui.FontRenderer;
 
 import leviathan.api.gui.ILabelWidget;
 import leviathan.api.gui.WidgetAlignment;
-import leviathan.api.gui.style.ITextStyle;
+import leviathan.api.text.ITextStyle;
 import leviathan.api.properties.IPropertyCollection;
 import leviathan.gui.properties.JEGSerializers;
 import leviathan.utils.GuiUtil;

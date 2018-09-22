@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import leviathan.api.geometry.Point;
+
 /**
  * The window element is the root element of the containment hierarchy. Its the only element the gui interacts with
  * directly.
@@ -37,6 +39,8 @@ public interface IWindowWidget extends IWidgetContainer {
 	 * Returns the mouse position relative to the given element.
 	 */
 	int getRelativeMouseY(@Nullable IWidget element);
+
+	Point getRelativeMousePosition(@Nullable IWidget element);
 
 	/**
 	 * Returns the current screen width.

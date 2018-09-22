@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import net.minecraft.client.renderer.GlStateManager;
 
-import leviathan.api.gui.events.MouseEvent;
+import leviathan.api.events.MouseEvent;
 import leviathan.utils.SoundUtil;
 import leviathan.utils.Sprite;
 

@@ -8,10 +8,10 @@ import net.minecraft.client.gui.GuiTextField;
 
 import leviathan.api.gui.IValueWidget;
 import leviathan.api.gui.IWindowWidget;
-import leviathan.api.gui.events.FocusEvent;
-import leviathan.api.gui.events.KeyEvent;
-import leviathan.api.gui.events.MouseEvent;
-import leviathan.api.gui.events.TextEditEvent;
+import leviathan.api.events.FocusEvent;
+import leviathan.api.events.KeyEvent;
+import leviathan.api.events.MouseEvent;
+import leviathan.api.events.TextEditEvent;
 
 public class TextEditWidget extends Widget implements IValueWidget<String> {
 

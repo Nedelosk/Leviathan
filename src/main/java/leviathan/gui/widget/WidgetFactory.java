@@ -2,8 +2,8 @@ package leviathan.gui.widget;
 
 import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWidgetFactory;
-import leviathan.api.gui.style.ITextStyle;
-import leviathan.api.gui.style.TextStyleBuilder;
+import leviathan.api.text.ITextStyle;
+import leviathan.api.text.TextStyleBuilder;
 import leviathan.gui.layouts.HorizontalLayout;
 import leviathan.gui.layouts.PaneLayout;
 import leviathan.gui.layouts.VerticalLayout;

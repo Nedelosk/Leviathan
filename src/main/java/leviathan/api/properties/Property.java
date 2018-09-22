@@ -2,7 +2,7 @@ package leviathan.api.properties;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -21,7 +21,7 @@ public class Property<V, P> implements IProperty<V, P> {
 	private final BiConsumer<P, V> valueConsumer;
 	private final Function<V, V> validator;
 	private final IElementSerializer<V> serializer;
-	private final Map<String, IProperty> children = new HashMap<>();
+	private final Map<String, IProperty> children = new LinkedHashMap<>();
 	private final IPropertyCollection collection;
 
 	private V cachedValue;

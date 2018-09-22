@@ -19,14 +19,40 @@ import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import leviathan.api.gui.style.ITextStyle;
-import leviathan.api.gui.tooltip.ITooltipProvider;
-import leviathan.api.gui.tooltip.Tooltip;
+import leviathan.api.text.ITextStyle;
+import leviathan.api.tooltip.ITooltipProvider;
+import leviathan.api.tooltip.Tooltip;
 import leviathan.gui.IGuiSizable;
 
 public class GuiUtil {
 
 	private GuiUtil() {
+	}
+
+	public static FontRenderer getFontRenderer(){
+		return Minecraft.getMinecraft().fontRenderer;
+	}
+
+	public static int getTextWidth(String text, ITextStyle textStyle){
+		FontRenderer fontRenderer = getFontRenderer();
+		boolean unicode = fontRenderer.getUnicodeFlag();
+		fontRenderer.setUnicodeFlag(textStyle.isUnicode());
+		int width = fontRenderer.getStringWidth(text);
+		fontRenderer.setUnicodeFlag(unicode);
+		return width;
+	}
+
+	public static int getTextHeight(String text, ITextStyle textStyle){
+		FontRenderer fontRenderer = getFontRenderer();
+		return fontRenderer.FONT_HEIGHT;
+	}
+
+	public static void drawText(String text, int x, int y, ITextStyle textStyle){
+		FontRenderer fontRenderer = getFontRenderer();
+		boolean unicode = fontRenderer.getUnicodeFlag();
+		fontRenderer.setUnicodeFlag(textStyle.isUnicode());
+		fontRenderer.drawString(text, x, y, textStyle.getColor(), textStyle.isShadow());
+		fontRenderer.setUnicodeFlag(unicode);
 	}
 
 	@SideOnly(Side.CLIENT)

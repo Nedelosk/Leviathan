@@ -10,7 +10,7 @@ import net.minecraft.util.math.MathHelper;
 
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
-import leviathan.api.Region;
+import leviathan.api.geometry.Region;
 import leviathan.api.gui.WidgetAlignment;
 import leviathan.api.properties.serializer.IPropertySerializer;
 import leviathan.api.properties.serializer.PropertySerializer;

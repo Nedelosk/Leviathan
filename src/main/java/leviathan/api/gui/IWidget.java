@@ -14,11 +14,14 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import leviathan.api.Region;
-import leviathan.api.gui.events.EventDestination;
-import leviathan.api.gui.events.IEventSystem;
-import leviathan.api.gui.events.JEGEvent;
-import leviathan.api.gui.tooltip.ITooltipSupplier;
+import leviathan.api.geometry.ITransformProvider;
+import leviathan.api.geometry.Point;
+import leviathan.api.geometry.Region;
+import leviathan.api.geometry.RectTransform;
+import leviathan.api.events.EventDestination;
+import leviathan.api.events.IEventSystem;
+import leviathan.api.events.JEGEvent;
+import leviathan.api.tooltip.ITooltipSupplier;
 import leviathan.api.properties.IProperty;
 import leviathan.api.properties.IPropertyCollection;
 import leviathan.api.properties.IPropertyProvider;
@@ -31,7 +34,7 @@ import leviathan.api.properties.IPropertyProvider;
  * root is a top-level {@link IWindowWidget}.
  */
 @SideOnly(Side.CLIENT)
-public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventSystem {
+public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventSystem, ITransformProvider {
 	/* Position and Size*/
 
 	/**
@@ -53,6 +56,18 @@ public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventS
 	IWidget setRegion(Region region);
 
 	Region getAbsoluteRegion();
+
+	default Point getPosition(){
+		return getRegion().getPosition();
+	}
+
+	default Point getSize(){
+		return getRegion().getSize();
+	}
+
+	default Point getAbsolutePosition(){
+		return getAbsoluteRegion().getPosition();
+	}
 
 	void onParentRegionChange(Region oldRegion, Region newRegion);
 
@@ -112,6 +127,10 @@ public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventS
 	 */
 	IWidget setSize(int width, int height);
 
+	default IWidget setSize(Point size){
+		return setSize(size.getX(), size.getY());
+	}
+
 	/**
 	 * Sets the position of this element.
 	 *
@@ -148,22 +167,18 @@ public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventS
 	 * @return the parent element of this element.
 	 */
 	@Nullable
-	IWidget getParent();
+	IWidgetContainer getParent();
 
 	/**
 	 * Sets the parent of this element.
 	 */
-	IWidget setParent(@Nullable IWidget parent);
-
-	default boolean hasParent() {
-		return getParent() != null;
-	}
+	IWidget setParent(@Nullable IWidgetContainer parent);
 
 	/* Creation & Deletion */
 
 	/**
 	 * Called at {@link IWidgetContainer#add(IWidget)} after the element was added to the group and
-	 * {@link #setParent(IWidget)} was called at the element.
+	 * {@link #setParent(IWidgetContainer)} was called at the element.
 	 * <p>
 	 * Can be used to add other element to the element if the element is an {@link IWidgetContainer}.
 	 *
@@ -202,6 +217,8 @@ public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventS
 	 * @return True if the mouse is currently over the element.
 	 */
 	boolean isMouseOver(int mouseX, int mouseY);
+
+	boolean isMouseOver(Point mouse);
 
 	/**
 	 * @return True if the mouse is currently over the element.
@@ -313,4 +330,10 @@ public interface IWidget extends ICroppable, IPropertyProvider<IWidget>, IEventS
 	void dispatchEvent(JEGEvent event, EventDestination destination);
 
 	void dispatchEvent(JEGEvent event, Collection<IWidget> widgets);
+
+	default IWidget getCropRelative(){
+		return getCroppedRegion().isEmpty() ? this : getCropElement();
+	}
+
+	RectTransform getTransform();
 }

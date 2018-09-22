@@ -12,10 +12,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import leviathan.api.ILayoutManager;
-import leviathan.api.gui.style.ITextStyle;
 import leviathan.api.render.DrawMode;
 import leviathan.api.render.IDrawable;
 import leviathan.api.render.ISprite;
+import leviathan.api.text.ITextStyle;
 
 
 @SideOnly(Side.CLIENT)
@@ -76,6 +76,11 @@ public interface IWidgetContainer extends IWidget, Iterable<IWidget> {
 	 */
 	void doLayout();
 
+	/*int getRelativeMouseX(@Nullable IWidget element);
+
+	int getRelativeMouseY(@Nullable IWidget element);
+
+	Point getRelativeMousePosition(@Nullable IWidget element);*/
 
 	Collection<IWidget> calculateHoverElements(Predicate<IWidget> filter, boolean onlyFirst);
 

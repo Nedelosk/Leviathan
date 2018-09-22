@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
-import leviathan.api.Region;
+import leviathan.api.geometry.Region;
 import leviathan.api.gui.IScrollable;
 import leviathan.api.gui.ITextureWidget;
 import leviathan.api.gui.IWindowWidget;

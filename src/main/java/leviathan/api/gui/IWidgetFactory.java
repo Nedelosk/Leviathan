@@ -8,7 +8,7 @@ package leviathan.api.gui;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import leviathan.api.gui.style.ITextStyle;
+import leviathan.api.text.ITextStyle;
 
 /**
  * A helper interface to create gui elements.

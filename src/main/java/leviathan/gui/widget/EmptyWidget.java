@@ -5,15 +5,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import leviathan.api.Region;
+import leviathan.api.geometry.Point;
+import leviathan.api.geometry.Region;
+import leviathan.api.geometry.RectTransform;
 import leviathan.api.gui.IWidget;
+import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWindowWidget;
 import leviathan.api.gui.WidgetAlignment;
-import leviathan.api.gui.events.EventDestination;
-import leviathan.api.gui.events.EventKey;
-import leviathan.api.gui.events.IEventListener;
-import leviathan.api.gui.events.JEGEvent;
-import leviathan.api.gui.tooltip.ITooltipSupplier;
+import leviathan.api.events.EventDestination;
+import leviathan.api.events.EventKey;
+import leviathan.api.events.IEventListener;
+import leviathan.api.events.JEGEvent;
+import leviathan.api.tooltip.ITooltipSupplier;
 import leviathan.api.properties.IProperty;
 import leviathan.api.properties.IPropertyCollection;
 import leviathan.api.properties.PropertyCollection;
@@ -154,12 +157,12 @@ public class EmptyWidget implements IWidget {
 
 	@Nullable
 	@Override
-	public IWidget getParent() {
+	public IWidgetContainer getParent() {
 		return null;
 	}
 
 	@Override
-	public IWidget setParent(@Nullable IWidget parent) {
+	public IWidget setParent(@Nullable IWidgetContainer parent) {
 		return this;
 	}
 
@@ -185,6 +188,11 @@ public class EmptyWidget implements IWidget {
 
 	@Override
 	public boolean isMouseOver(int mouseX, int mouseY) {
+		return false;
+	}
+
+	@Override
+	public boolean isMouseOver(Point mouse) {
 		return false;
 	}
 
@@ -324,26 +332,6 @@ public class EmptyWidget implements IWidget {
 	}
 
 	@Override
-	public int getCropX() {
-		return 0;
-	}
-
-	@Override
-	public int getCropY() {
-		return 0;
-	}
-
-	@Override
-	public int getCropWidth() {
-		return 0;
-	}
-
-	@Override
-	public int getCropHeight() {
-		return 0;
-	}
-
-	@Override
 	public Region getCroppedRegion() {
 		return Region.EMPTY;
 	}
@@ -365,6 +353,16 @@ public class EmptyWidget implements IWidget {
 
 	@Override
 	public void setPropertyValue(IWidget value) {
+
+	}
+
+	@Override
+	public RectTransform getTransform() {
+		return RectTransform.createEmpty(this);
+	}
+
+	@Override
+	public void onTransformChange() {
 
 	}
 }
