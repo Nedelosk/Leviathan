@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import leviathan.api.events.FocusEvent;
-import leviathan.api.geometry.ITransformProvider;
 import leviathan.api.events.EventDestination;
 import leviathan.api.events.EventKey;
+import leviathan.api.events.FocusEvent;
 import leviathan.api.events.IEventListener;
 import leviathan.api.events.IEventSystem;
 import leviathan.api.events.JEGEvent;
+import leviathan.api.geometry.ITransformProvider;
 
 public interface IWidget extends ITransformProvider, ITooltipProvider, ILayout, IEventSystem {
 	/**
@@ -21,10 +21,9 @@ public interface IWidget extends ITransformProvider, ITooltipProvider, ILayout, 
 
 	void updateClient();
 
-	default boolean isMouseOver(){
-		Optional<IWindow> windowOptional = getContainingWindow();
-		return windowOptional.map(window -> window.isMouseOver(this)).orElse(false);
-	}
+	void onCreation();
+
+	void onDeletion();
 
 	/**
 	 * @return True of this element and its parent are visible.
@@ -56,6 +55,8 @@ public interface IWidget extends ITransformProvider, ITooltipProvider, ILayout, 
 
 	String getName();
 
+	void onParentNameChange(String oldName, String newName);
+
 	/**
 	 * The most elements are enabled by default. Only a few elements are disabled at a certain time like buttons.
 	 *
@@ -78,6 +79,7 @@ public interface IWidget extends ITransformProvider, ITooltipProvider, ILayout, 
 
 	void actOnWindow(Consumer<IWindow> windowConsumer);
 
+	/* Events */
 	default void dispatchEvent(JEGEvent event) {
 		dispatchEvent(event, EventDestination.ALL);
 	}
@@ -114,7 +116,26 @@ public interface IWidget extends ITransformProvider, ITooltipProvider, ILayout, 
 
 	IEventSystem getEventSystem();
 
+	/* Screen State */
 	default boolean canFocus(){
 		return hasListener(FocusEvent.GAIN) || hasListener(FocusEvent.LOSE);
+	}
+
+	default boolean isFocused() {
+		return getContainingWindow()
+			.map(window -> window.getScreen().isFocused(this))
+			.orElse(false);
+	}
+
+	default boolean isMouseOver() {
+		return getContainingWindow()
+			.map(window -> window.getScreen().isMouseOver(this))
+			.orElse(false);
+	}
+
+	default boolean isDragged() {
+		return getContainingWindow()
+			.map(window -> window.getScreen().isDragged(this))
+			.orElse(false);
 	}
 }

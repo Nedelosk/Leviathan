@@ -33,10 +33,10 @@ import leviathan.api.text.ITextStyle;
 import leviathan.api.render.DrawMode;
 import leviathan.api.render.IDrawable;
 import leviathan.api.render.ISprite;
-import leviathan.gui.layouts.HorizontalLayout;
-import leviathan.gui.layouts.PaneLayout;
-import leviathan.gui.layouts.VerticalLayout;
-import leviathan.gui.layouts.WidgetLayoutHelper;
+import leviathan.widgets.layouts.HorizontalLayout;
+import leviathan.widgets.layouts.PaneLayout;
+import leviathan.widgets.layouts.VerticalLayout;
+import leviathan.widgets.layouts.WidgetLayoutHelper;
 import leviathan.utils.Drawable;
 
 

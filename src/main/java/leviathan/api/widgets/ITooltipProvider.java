@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import leviathan.api.geometry.Vector;
+import leviathan.api.geometry.Point;
 import leviathan.api.tooltip.ITooltipSupplier;
 
 public interface ITooltipProvider {
@@ -26,5 +26,5 @@ public interface ITooltipProvider {
 
 	void addTooltip(ITooltipSupplier supplier);
 
-	List<String> getTooltip(Vector mousePosition);
+	List<String> getTooltip(Point mousePosition);
 }

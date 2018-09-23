@@ -55,7 +55,7 @@ public enum EventDestination {
 		public void sendEvent(IWidget element, JEGEvent event) {
 			if(event.getEventKey() == MouseEvent.MOUSE_DOWN){
 				Log.error("---------------------------------------------------------");
-				Log.error("Dispatched " + event.getEventKey() + " to the widget " + element.getName() + " at " + element.positionOnScreen() + " from the widget " + event.getSource().getName() + " at " + event.getSource().getAbsolutePosition());
+				Log.error("Dispatched " + event.getEventKey() + " to the widget " + element.getName() + " at " + element.positionOnScreen() + " from the widget " + event.getSource().getName() + " at " + event.getSource().positionOnScreen());
 				Log.error("---------------------------------------------------------");
 			}
 			element.receiveEvent(event);

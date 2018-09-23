@@ -1,12 +1,7 @@
 package leviathan.api.events;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import leviathan.api.widgets.IWidget;
 
-import leviathan.api.gui.IWidget;
-
-
-@SideOnly(Side.CLIENT)
 public class ValueChangedEvent<V> extends JEGEvent {
 	private final V newValue;
 	private final V oldValue;

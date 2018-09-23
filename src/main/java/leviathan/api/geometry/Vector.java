@@ -166,6 +166,10 @@ public class Vector {
 		return add(left, right, null);
 	}
 
+	public static Vector add(Point left, Vector right) {
+		return add(left.toVec(), right, null);
+	}
+
 	/**
 	 * Subtract a vector from another vector and place the result in a destination
 	 * vector.
@@ -213,6 +217,10 @@ public class Vector {
 		return  divide(dividend, divisor, null);
 	}
 
+	public static Vector divide(Point dividend, Vector divisor) {
+		return divide(dividend.toVec(), divisor, null);
+	}
+
 	public Vector scale(float scale) {
 		x *= scale;
 		y *= scale;
@@ -222,6 +230,14 @@ public class Vector {
 
 	public Vector copy(){
 		return new Vector(x, y);
+	}
+
+	public Point toPoint() {
+		return new Point((int) x, (int) y);
+	}
+
+	public Point roundPoint() {
+		return new Point(Math.round(x), Math.round(y));
 	}
 
 	public String toString() {

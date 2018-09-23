@@ -3,8 +3,8 @@ package leviathan.api.events;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import leviathan.api.geometry.Region;
-import leviathan.api.gui.IWidget;
+import leviathan.api.geometry.RectTransform;
+import leviathan.api.widgets.IWidget;
 
 @SideOnly(Side.CLIENT)
 public class ElementEvent extends JEGEvent {
@@ -18,21 +18,15 @@ public class ElementEvent extends JEGEvent {
 	}
 
 	public static class RegionChange extends ElementEvent {
-		private final Region oldRegion;
-		private final Region newRegion;
+		private final RectTransform transform;
 
-		public RegionChange(IWidget origin, Region oldRegion, Region newRegion) {
+		public RegionChange(IWidget origin) {
 			super(origin, REGION_CHANGE);
-			this.oldRegion = oldRegion;
-			this.newRegion = newRegion;
+			this.transform = origin.getTransform();
 		}
 
-		public Region getOldRegion() {
-			return oldRegion;
-		}
-
-		public Region getNewRegion() {
-			return newRegion;
+		public RectTransform getTransform() {
+			return transform;
 		}
 	}
 

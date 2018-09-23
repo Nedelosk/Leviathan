@@ -6,9 +6,14 @@ import java.util.Objects;
 @Immutable
 public final class Point {
 	public static final Point ORIGIN = new Point(0, 0);
+	public static final Point LEFT = new Point(-1, 0);
+	public static final Point RIGHT = new Point(1, 0);
+	public static final Point DOWN = new Point(0, -1);
+	public static final Point UP = new Point(0, 1);
+	public static final Point RIGHT_UP = new Point(1, 1);
 
-	private final int x;
-	private final int y;
+	public final int x;
+	public final int y;
 
 	public Point(int x, int y) {
 		this.x = x;
@@ -40,6 +45,38 @@ public final class Point {
 	 */
 	public Region toRegion(){
 		return new Region(0, 0, x, y);
+	}
+
+	public Point withX(int x) {
+		return new Point(x, y);
+	}
+
+	public Point withY(int y) {
+		return new Point(x, y);
+	}
+
+	public static Point add(Point left, Point right) {
+		return new Point(left.x + right.x, left.y + right.y);
+	}
+
+	public static Point sub(Point left, Point right) {
+		return new Point(left.x - right.x, left.y - right.y);
+	}
+
+	public static Point multiply(Point left, Point right) {
+		return new Point(left.x * right.x, left.y * right.y);
+	}
+
+	public static Point divide(Point dividend, Point divisor) {
+		return new Point(dividend.x / divisor.x, dividend.y / divisor.y);
+	}
+
+	public Point negate() {
+		return new Point(-x, -y);
+	}
+
+	public Point copy() {
+		return new Point(x, y);
 	}
 
 	@Override

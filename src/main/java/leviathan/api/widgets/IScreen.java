@@ -14,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import leviathan.api.events.EventKey;
 import leviathan.api.events.JEGEvent;
+import leviathan.api.geometry.Point;
 import leviathan.api.geometry.Vector;
 
 public interface IScreen extends Iterable<IWindow> {
@@ -31,11 +32,11 @@ public interface IScreen extends Iterable<IWindow> {
 
 	Optional<IWindow> getWindowUnderMouse();
 
-	Optional<IWindow> getWindowUnderPosition(Vector position);
+	Optional<IWindow> getWindowUnderPosition(Point position);
 
-	Vector getMousePosition();
+	Point getMousePosition();
 
-	Vector getSize();
+	Point getSize();
 
 	Collection<Pair<IWindow, Rectangle>> getWindowAreas();
 

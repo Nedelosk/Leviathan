@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import leviathan.api.gui.IWidget;
 import leviathan.api.gui.IWindowWidget;
 import leviathan.gui.events.EventValueChanged;
-import leviathan.gui.layouts.VerticalLayout;
+import leviathan.widgets.layouts.VerticalLayout;
 
 /**
  * A element list with selectable elements.

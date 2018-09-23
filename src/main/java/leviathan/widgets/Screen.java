@@ -21,6 +21,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 import leviathan.api.events.FocusEvent;
 import leviathan.api.events.MouseEvent;
+import leviathan.api.geometry.Point;
 import leviathan.api.geometry.RectTransform;
 import leviathan.api.geometry.Vector;
 import leviathan.api.events.JEGEvent;
@@ -39,7 +40,7 @@ public class Screen implements IScreen {
 	private int width;
 	private int height;
 	/* Mouse */
-	private Vector mousePosition = new Vector(-1, -1);
+	private Point mousePosition = new Point(-1, -1);
 	private Deque<IWidget> hoveredWidgets = new ArrayDeque<>();
 	@Nullable
 	private IWidget focusedWidget;
@@ -60,7 +61,7 @@ public class Screen implements IScreen {
 
 	@Override
 	public void updateScreen(int mouseX, int mouseY) {
-		updateMousePosition(new Vector(mouseX, mouseY));
+		updateMousePosition(new Point(mouseX, mouseY));
 	}
 
 	@Override
@@ -68,14 +69,14 @@ public class Screen implements IScreen {
 		windows.values().forEach(IWidget::draw);
 	}
 
-	protected void updateMousePosition(Vector mousePosition){
+	protected void updateMousePosition(Point mousePosition) {
 		hoveredWidgets.clear();
 		Optional<IWindow> windowOptional = getWindowUnderMouse();
 		windowOptional.ifPresent(window->{
 			Collection<IWidget> collectedWidgets = collectHoverWidgets(window);
 			collectedWidgets.stream().filter(this::isMouseOver).forEach(widget-> hoveredWidgets.addLast(widget));
 		});
-		Vector delta = Vector.sub(mousePosition, this.mousePosition);
+		Point delta = Point.sub(mousePosition, this.mousePosition);
 		if(!delta.equals(Vector.ORIGIN)){
 			getWindowUnderMouse().ifPresent(window->{
 				window.dispatchEvent(new MouseEvent(window, MouseEvent.MOUSE_MOVE, mousePosition, delta));
@@ -123,8 +124,8 @@ public class Screen implements IScreen {
 	}
 
 	@Override
-	public Vector getSize() {
-		return new Vector(width, height);
+	public Point getSize() {
+		return new Point(width, height);
 	}
 
 	@Override
@@ -156,7 +157,7 @@ public class Screen implements IScreen {
 
 	public boolean isMouseOverImpl(IWidget widget){
 		RectTransform widgetTransform = widget.getTransform();
-		Vector relativePosition = Vector.sub(mousePosition, widgetTransform.getScreenPosition());
+		Point relativePosition = Point.sub(mousePosition, widgetTransform.getScreenPosition());
 		return widgetTransform.contains(relativePosition);
 	}
 
@@ -236,7 +237,7 @@ public class Screen implements IScreen {
 	}
 
 	@Override
-	public Optional<IWindow> getWindowUnderPosition(Vector position) {
+	public Optional<IWindow> getWindowUnderPosition(Point position) {
 		return getWindowAreas().stream().filter(windowPair->windowPair.getValue().contains(Math.round(position.x), Math.round(position.y))).map(Pair::getKey).findAny();
 	}
 
@@ -260,7 +261,7 @@ public class Screen implements IScreen {
 	}
 
 	@Override
-	public Vector getMousePosition() {
+	public Point getMousePosition() {
 		return mousePosition;
 	}
 }

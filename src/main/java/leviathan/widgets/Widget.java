@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 
 import net.minecraft.client.renderer.GlStateManager;
 
+import leviathan.api.events.ElementEvent;
+import leviathan.api.geometry.Point;
 import leviathan.api.geometry.RectTransform;
 import leviathan.api.geometry.Vector;
 import leviathan.api.events.EventKey;
@@ -34,7 +36,7 @@ public class Widget implements IWidget {
 	private boolean valid = false;
 	private String name;
 
-	public Widget(String name, float x, float y, float width, float height) {
+	public Widget(String name, int x, int y, int width, int height) {
 		this.name = name;
 		this.transform = new RectTransform(this, x, y, width, height);
 	}
@@ -45,7 +47,7 @@ public class Widget implements IWidget {
 		if(!isVisible()){
 			return;
 		}
-		Vector position = transform.getPosition();
+		Point position = transform.getPosition();
 		Vector scale = transform.getScale();
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(position.x, position.y, 1.0F);
@@ -70,6 +72,18 @@ public class Widget implements IWidget {
 	}
 
 	/* State */
+
+	@Override
+	public void onCreation() {
+		//TODO Find a method so this event gets to the window even if the parent gets later added to the window than this widget to the parent
+		actOnWindow(window -> window.dispatchEvent(new ElementEvent(this, ElementEvent.CREATION)));
+	}
+
+	@Override
+	public void onDeletion() {
+		actOnWindow(window -> window.dispatchEvent(new ElementEvent(this, ElementEvent.DELETION)));
+	}
+
 	@Override
 	public boolean isRecursivelyVisible() {
 		return visible && getContainer().map(IWidget::isRecursivelyVisible).orElse(true);
@@ -86,12 +100,23 @@ public class Widget implements IWidget {
 	}
 
 	public void setName(String name) {
+		String oldName = this.name;
 		this.name = name;
+		onNameChange(oldName, name);
 	}
 
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	protected void onNameChange(String oldName, String newName) {
+		actOnWindow(window -> window.dispatchEvent(new ElementEvent.Rename(this, oldName, name)));
+	}
+
+	@Override
+	public void onParentNameChange(String oldName, String newName) {
+		//Nothing
 	}
 
 	@Override
@@ -143,7 +168,7 @@ public class Widget implements IWidget {
 
 	@Override
 	public void onTransformChange() {
-		//Nothing
+		actOnWindow(window -> window.dispatchEvent(new ElementEvent.RegionChange(this)));
 	}
 
 	@Override
@@ -152,12 +177,12 @@ public class Widget implements IWidget {
 	}
 
 	@Override
-	public Vector positionRelativeToWidget(Vector position) {
-		return Vector.sub(position, positionOnScreen());
+	public Point positionRelativeToWidget(Point position) {
+		return Point.sub(position, positionOnScreen());
 	}
 
 	@Override
-	public Vector positionOnScreen() {
+	public Point positionOnScreen() {
 		return transform.getScreenPosition();
 	}
 
@@ -197,8 +222,8 @@ public class Widget implements IWidget {
 	}
 
 	@Override
-	public List<String> getTooltip(Vector mousePosition) {
-		Vector relativePosition = Vector.sub(mousePosition, positionOnScreen());
+	public List<String> getTooltip(Point mousePosition) {
+		Point relativePosition = Point.sub(mousePosition, positionOnScreen());
 		List<String> lines = new ArrayList<>();
 		tooltipSuppliers.stream().filter(ITooltipSupplier::hasTooltip).forEach(supplier -> supplier.addTooltip(lines, this, relativePosition));
 		return lines;

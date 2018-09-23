@@ -19,7 +19,7 @@ import leviathan.api.gui.WidgetAlignment;
 import leviathan.api.events.MouseEvent;
 import leviathan.api.render.DrawMode;
 import leviathan.gui.GuiWorkspace;
-import leviathan.gui.layouts.VerticalLayout;
+import leviathan.widgets.layouts.VerticalLayout;
 import leviathan.gui.widget.ColoredWidget;
 import leviathan.gui.widget.ScrollBarWidget;
 import leviathan.gui.widget.ScrollableWidget;

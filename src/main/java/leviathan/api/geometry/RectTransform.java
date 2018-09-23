@@ -1,14 +1,13 @@
 package leviathan.api.geometry;
 
 import javax.annotation.Nullable;
-
 import java.awt.Rectangle;
 
 import leviathan.api.widgets.IWidget;
 
 public class RectTransform {
 	public static final Vector DEFAULT_SCALE = new Vector(1.0F, 1.0F);
-	public static final Vector DEFAULT_SIZE = new Vector(32, 32);
+	public static final Point DEFAULT_SIZE = new Point(32, 32);
 
 	public static RectTransform createEmpty(IWidget widget){
 		return new RectTransform(widget, 0, 0, 0, 0);
@@ -17,47 +16,47 @@ public class RectTransform {
 	private final IWidget widget;
 
 	private Anchors anchors;
-	private Vector position;
+	private Point position;
 	private Vector sizeDelta;
 	private Vector scale;
 	@Nullable
-	private Vector screenPosition;
+	private Point screenPosition;
 	@Nullable
 	private RectTransform parent;
 	@Nullable
 	private RectTransform cropTransform;
 
 	public RectTransform(IWidget widget, Region region) {
-		this(widget, region.getPosition().toVec(), region.getSize().toVec(), Anchors.DEFAULT, DEFAULT_SCALE);
+		this(widget, region.getPosition(), region.getSize(), Anchors.DEFAULT, DEFAULT_SCALE);
 	}
 
-	public RectTransform(IWidget widget, float width, float height){
+	public RectTransform(IWidget widget, int width, int height) {
 		this(widget, 0, 0, width, height);
 	}
 
-	public RectTransform(IWidget widget, float x, float y, float width, float height){
+	public RectTransform(IWidget widget, int x, int y, int width, int height) {
 		this(widget, x, y, width, height, 1.0F, 1.0F);
 	}
 
-	public RectTransform(IWidget widget, float x, float y, float width, float height, float scaleX, float scaleY){
-		this(widget, new Vector(x, y), new Vector(width, height), Anchors.DEFAULT, new Vector(scaleX, scaleY));
+	public RectTransform(IWidget widget, int x, int y, int width, int height, float scaleX, float scaleY) {
+		this(widget, new Point(x, y), new Point(width, height), Anchors.DEFAULT, new Vector(scaleX, scaleY));
 	}
 
-	public RectTransform(IWidget widget, Vector position, Vector size, Anchors anchors, Vector scale) {
+	public RectTransform(IWidget widget, Point position, Point size, Anchors anchors, Vector scale) {
 		this.widget = widget;
 		this.position = position;
-		this.sizeDelta = size;
+		this.sizeDelta = size.toVec();
 		this.anchors = anchors;
 		this.scale = scale;
 	}
 
-	public void setPosition(Vector position) {
+	public void setPosition(Point position) {
 		this.position = position;
 		this.screenPosition = null;
 		widget.onTransformChange();
 	}
 
-	public Vector getPosition() {
+	public Point getPosition() {
 		return position;
 	}
 
@@ -69,26 +68,26 @@ public class RectTransform {
 		return sizeDelta;
 	}
 
-	public void setSize(Vector size){
+	public void setSize(Point size) {
 		this.sizeDelta = Vector.divide(size, scale);
 		this.screenPosition = null;
 		widget.onTransformChange();
 	}
 
-	public Vector getSize(){
-		return Vector.multiply(sizeDelta, getAbsoluteScale());
+	public Point getSize() {
+		return Vector.multiply(sizeDelta, getAbsoluteScale()).roundPoint();
 	}
 
 	public Vector getAbsoluteScale() {
 		return Vector.multiply(scale, (parent != null ? parent.getAbsoluteScale() : Vector.RIGHT_UP));
 	}
 
-	public Vector getScreenPosition() {
+	public Point getScreenPosition() {
 		if(screenPosition == null){
-			Vector scaledPosition = getPosition().copy();
+			Point scaledPosition = getPosition().copy();
 			if(parent != null){
-				Vector parentPosition = parent.getScreenPosition();
-				screenPosition = Vector.add(scaledPosition, parentPosition);
+				Point parentPosition = parent.getScreenPosition();
+				screenPosition = Point.add(scaledPosition, parentPosition);
 			}else {
 				screenPosition = scaledPosition;
 			}
@@ -140,27 +139,23 @@ public class RectTransform {
 		return widget;
 	}
 
-	public boolean contains(Point point){
-		return contains(new Vector(point.getX(), point.getY()));
+	public boolean contains(Point position) {
+		return intersects(position, Point.RIGHT_UP);
 	}
 
-	public boolean contains(Vector position){
-		return intersects(position, Vector.RIGHT_UP);
+	public boolean intersects(Point position, Point size) {
+		return intersects(position.getX(), position.getY(), size.getX(), size.getY());
 	}
 
-	public boolean intersects(Vector position, Vector size) {
-		return intersects(position.x, position.y, size.x, size.y);
-	}
-
-	public boolean intersects(float x, float y, float width, float height) {
-		Vector size = getSize();
-		Vector pos = getPosition();
-		float w = size.x;
-		float h = size.y;
-		float pX = pos.x;
-		float pY = pos.y;
+	public boolean intersects(int x, int y, int width, int height) {
+		Point size = getSize();
+		Point pos = getPosition();
+		int w = size.getX();
+		int h = size.getY();
+		int pX = pos.getX();
+		int pY = pos.getY();
 		if(cropTransform != null){
-			Vector cropPos = Vector.sub(new Vector(x, y), Vector.sub(cropTransform.getPosition(), pos));
+			Point cropPos = Point.sub(new Point(x, y), Point.sub(cropTransform.getPosition(), pos));
 			return cropTransform.contains(cropPos);
 		}
 		//No dimension
@@ -176,8 +171,8 @@ public class RectTransform {
 	}
 
 	public Rectangle toRectangle() {
-		Vector size = getSize();
-		Vector pos = getPosition();
-		return new Rectangle(Math.round(pos.x), Math.round(pos.y), Math.round(size.x), Math.round(size.y));
+		Point size = getSize();
+		Point pos = getPosition();
+		return new Rectangle(pos.getX(), pos.getY(), size.getX(), size.getY());
 	}
 }

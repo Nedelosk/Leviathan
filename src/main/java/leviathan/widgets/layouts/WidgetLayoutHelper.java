@@ -1,4 +1,4 @@
-package leviathan.gui.layouts;
+package leviathan.widgets.layouts;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

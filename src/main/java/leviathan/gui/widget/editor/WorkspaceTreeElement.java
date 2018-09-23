@@ -6,7 +6,7 @@ import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.events.MouseEvent;
 import leviathan.editor.WidgetTreeEntry;
 import leviathan.editor.WidgetTreeList;
-import leviathan.gui.layouts.VerticalLayout;
+import leviathan.widgets.layouts.VerticalLayout;
 import leviathan.gui.widget.ColoredWidget;
 import leviathan.gui.widget.WidgetContainer;
 

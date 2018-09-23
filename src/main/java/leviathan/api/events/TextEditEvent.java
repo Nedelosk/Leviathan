@@ -1,12 +1,8 @@
 package leviathan.api.events;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import leviathan.api.gui.IWidget;
+import leviathan.api.widgets.IWidget;
 
 
-@SideOnly(Side.CLIENT)
 public class TextEditEvent extends ValueChangedEvent<String> {
 	public static final EventKey<TextEditEvent> FINISH = new EventKey<>("edit_finished", TextEditEvent.class);
 

@@ -1,6 +1,7 @@
 package leviathan.api.events;
 
-import leviathan.api.gui.IWidget;
+
+import leviathan.api.widgets.IWidget;
 
 public class KeyEvent extends JEGEvent {
 	public static final EventKey<KeyEvent> KEY_DOWN = new EventKey<>("key_down", KeyEvent.class);

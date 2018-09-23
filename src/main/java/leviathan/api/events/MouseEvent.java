@@ -2,7 +2,7 @@ package leviathan.api.events;
 
 import java.util.List;
 
-import leviathan.api.geometry.Vector;
+import leviathan.api.geometry.Point;
 import leviathan.api.widgets.IWidget;
 
 /**
@@ -21,24 +21,24 @@ public class MouseEvent extends JEGEvent {
 	public static final EventKey<TooltipEvent> TOOLTIP = new EventKey<>("mouse_tooltip", TooltipEvent.class);
 
 	//The position of the mouse.
-	private final Vector position;
+	private final Point position;
 	//The position of the mouse relative to the position of the element.
-	private final Vector relative;
+	private final Point relative;
 	//The clicked mouse button. Can be -1 if no button was clicked.
 	private final int button;
 	//The difference of the position of the mouse since the last event.
-	private final Vector delta;
+	private final Point delta;
 
 
-	public MouseEvent(IWidget origin, EventKey key, Vector position, int button) {
-		this(origin, key, position, button, Vector.ORIGIN);
+	public MouseEvent(IWidget origin, EventKey key, Point position, int button) {
+		this(origin, key, position, button, Point.ORIGIN);
 	}
 
-	public MouseEvent(IWidget origin, EventKey key, Vector position, Vector delta) {
+	public MouseEvent(IWidget origin, EventKey key, Point position, Point delta) {
 		this(origin, key, position, -1, delta);
 	}
 
-	public MouseEvent(IWidget origin, EventKey key, Vector position, int button, Vector delta) {
+	public MouseEvent(IWidget origin, EventKey key, Point position, int button, Point delta) {
 		super(origin, key);
 		this.position = position;
 		this.button = button;
@@ -50,15 +50,15 @@ public class MouseEvent extends JEGEvent {
 		return button;
 	}
 
-	public Vector getPosition() {
+	public Point getPosition() {
 		return position;
 	}
 
-	public Vector getRelative() {
+	public Point getRelative() {
 		return relative;
 	}
 
-	public Vector getDelta() {
+	public Point getDelta() {
 		return delta;
 	}
 
@@ -78,7 +78,7 @@ public class MouseEvent extends JEGEvent {
 	public static class TooltipEvent extends MouseEvent {
 		private final List<String> lines;
 
-		public TooltipEvent(IWidget origin, Vector position, List<String> lines) {
+		public TooltipEvent(IWidget origin, Point position, List<String> lines) {
 			super(origin, TOOLTIP, position, -1);
 			this.lines = lines;
 		}

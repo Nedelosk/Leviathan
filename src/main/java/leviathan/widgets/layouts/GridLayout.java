@@ -1,7 +1,7 @@
-package leviathan.gui.layouts;
+package leviathan.widgets.layouts;
 
 import leviathan.api.ILayoutManager;
-import leviathan.api.gui.IWidgetContainer;
+import leviathan.api.widgets.IContainer;
 
 public class GridLayout implements ILayoutManager {
 	private int columns;
@@ -21,7 +21,7 @@ public class GridLayout implements ILayoutManager {
 	}
 
 	@Override
-	public void layoutWidget(IWidgetContainer layout) {
+	public void layoutWidget(IContainer layout) {
 
 	}
 }

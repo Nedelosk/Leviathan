@@ -7,7 +7,7 @@ package leviathan.api.tooltip;
 
 import java.util.Collection;
 
-import leviathan.api.geometry.Vector;
+import leviathan.api.geometry.Point;
 import leviathan.api.widgets.IWidget;
 
 @FunctionalInterface
@@ -17,5 +17,5 @@ public interface ITooltipSupplier {
 		return true;
 	}
 
-	void addTooltip(Collection<String> lines, IWidget element, Vector mousePosition);
+	void addTooltip(Collection<String> lines, IWidget element, Point mousePosition);
 }

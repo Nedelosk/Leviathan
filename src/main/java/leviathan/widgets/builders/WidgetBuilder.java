@@ -1,6 +1,6 @@
 package leviathan.widgets.builders;
 
-import leviathan.api.geometry.Vector;
+import leviathan.api.geometry.Point;
 import leviathan.api.widgets.IContainer;
 import leviathan.api.widgets.IWidget;
 import leviathan.api.widgets.builders.IWidgetBuilder;
@@ -9,16 +9,16 @@ import leviathan.api.widgets.builders.IWidgetBuilder;
 public abstract class WidgetBuilder<W extends IWidget, B extends IWidgetBuilder> implements IWidgetBuilder<W, B> {
 	private final IContainer container;
 	protected String name;
-	protected float x;
-	protected float y;
-	protected float width;
-	protected float height;
+	protected int x;
+	protected int y;
+	protected int width;
+	protected int height;
 
 	public WidgetBuilder(IContainer container, String name) {
 		this(container, name, 0, 0, 0, 0);
 	}
 
-	public WidgetBuilder(IContainer container, String name, float x, float y, float width, float height) {
+	public WidgetBuilder(IContainer container, String name, int x, int y, int width, int height) {
 		this.container = container;
 		this.name = name;
 		this.x = x;
@@ -34,14 +34,14 @@ public abstract class WidgetBuilder<W extends IWidget, B extends IWidgetBuilder>
 	}
 
 	@Override
-	public B setPosition(Vector position) {
+	public B setPosition(Point position) {
 		this.x = position.x;
 		this.y = position.y;
 		return (B) this;
 	}
 
 	@Override
-	public B setSize(Vector size) {
+	public B setSize(Point size) {
 		this.width = size.x;
 		this.height = size.y;
 		return (B) this;

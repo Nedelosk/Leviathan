@@ -1,11 +1,13 @@
 package leviathan.api.widgets;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Optional;
 
 import leviathan.api.ILayoutManager;
 
@@ -37,9 +39,16 @@ public interface IContainer extends IWidget, Iterable<IWidget>, IWidgetCreator {
 
 	Collection<IWidget> getChildren();
 
-	void setLayoutManager(ILayoutManager layoutManager);
+	void setLayoutManager(@Nullable ILayoutManager layoutManager);
 
+	@Nullable
 	ILayoutManager getLayoutManager();
+
+	boolean hasWidget(String name);
+
+	Optional<IWidget> getWidget(String name);
+
+	Optional<IWidget> getWidgetRecursively(String name);
 
 	@Override
 	@Nonnull

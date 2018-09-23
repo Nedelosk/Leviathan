@@ -2,6 +2,7 @@ package leviathan.widgets;
 
 import leviathan.api.geometry.HorizontalAlignment;
 import leviathan.api.geometry.ITransformProvider;
+import leviathan.api.geometry.Point;
 import leviathan.api.geometry.Vector;
 import leviathan.api.geometry.VerticalAlignment;
 import leviathan.api.text.ITextStyle;
@@ -17,21 +18,21 @@ public class LabelWidget extends Widget implements ILabelWidget {
 	private VerticalAlignment verticalAlignment;
 	private boolean autoSize;
 
-	public static LabelWidget create(String name, float x, float y, float width, float height, String text, ITextStyle textStyle, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, boolean autoSize){
+	public static LabelWidget create(String name, int x, int y, int width, int height, String text, ITextStyle textStyle, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, boolean autoSize) {
 		return autoSize ? create(name, x, y, text, textStyle, horizontalAlignment, verticalAlignment) : create(name, x, y, width, height, text, textStyle, horizontalAlignment, verticalAlignment);
 	}
 
-	public static LabelWidget create(String name, float x, float y, String text, ITextStyle textStyle, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment){
+	public static LabelWidget create(String name, int x, int y, String text, ITextStyle textStyle, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment) {
 		int width = GuiUtil.getTextWidth(text, textStyle);
 		int height = GuiUtil.getTextHeight(text, textStyle);
 		return new LabelWidget(name, x, y, width, height, text, textStyle, horizontalAlignment, verticalAlignment, true);
 	}
 
-	public static LabelWidget create(String name, float x, float y, float width, float height,  String text, ITextStyle textStyle, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment){
+	public static LabelWidget create(String name, int x, int y, int width, int height, String text, ITextStyle textStyle, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment) {
 		return new LabelWidget(name, x, y, width, height, text, textStyle, horizontalAlignment, verticalAlignment, false);
 	}
 
-	private LabelWidget(String name, float x, float y, float width, float height, String text, ITextStyle textStyle, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, boolean autoSize) {
+	private LabelWidget(String name, int x, int y, int width, int height, String text, ITextStyle textStyle, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, boolean autoSize) {
 		super(name, x, y, width, height);
 		this.text = text;
 		this.textStyle = textStyle;
@@ -58,7 +59,7 @@ public class LabelWidget extends Widget implements ILabelWidget {
 
 	public void setText(String text) {
 		this.text = text;
-		this.formattedText = GuiUtil.getFormattedString(textStyle, text);
+		updateFormatted();
 	}
 
 	public ITextStyle getTextStyle() {
@@ -67,7 +68,7 @@ public class LabelWidget extends Widget implements ILabelWidget {
 
 	public void setTextStyle(ITextStyle textStyle) {
 		this.textStyle = textStyle;
-		this.formattedText = GuiUtil.getFormattedString(textStyle, text);
+		updateFormatted();
 	}
 
 	public HorizontalAlignment getHorizontalAlignment() {
@@ -101,9 +102,17 @@ public class LabelWidget extends Widget implements ILabelWidget {
 
 	public void setAutoSize(boolean autoSize) {
 		if(autoSize && !this.autoSize){
-			Vector size = new Vector(GuiUtil.getTextWidth(text, textStyle), GuiUtil.getTextHeight(text, textStyle));
+			Point size = new Point(GuiUtil.getTextWidth(text, textStyle), GuiUtil.getTextHeight(text, textStyle));
 			setSize(size);
 		}
 		this.autoSize = autoSize;
+	}
+
+	protected void updateFormatted() {
+		this.formattedText = GuiUtil.getFormattedString(textStyle, text);
+		if (autoSize) {
+			Point size = new Point(GuiUtil.getTextWidth(text, textStyle), GuiUtil.getTextHeight(text, textStyle));
+			setSize(size);
+		}
 	}
 }

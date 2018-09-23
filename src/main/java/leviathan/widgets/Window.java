@@ -1,5 +1,10 @@
 package leviathan.widgets;
 
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import leviathan.api.widgets.IContainer;
 import leviathan.api.widgets.IScreen;
 import leviathan.api.widgets.IWidget;
 import leviathan.api.widgets.IWindow;
@@ -27,5 +32,15 @@ public class Window extends Container implements IWindow {
 	@Override
 	public IScreen getScreen() {
 		return screen;
+	}
+
+	@Override
+	public Collection<IWidget> getWidgets(String name) {
+		return getChildren().stream()
+			.filter(widget -> widget instanceof IContainer)
+			.map(widget -> ((IContainer) widget).getWidget(name))
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.collect(Collectors.toList());
 	}
 }

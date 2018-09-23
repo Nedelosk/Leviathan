@@ -4,9 +4,9 @@ import leviathan.api.gui.IWidgetContainer;
 import leviathan.api.gui.IWidgetFactory;
 import leviathan.api.text.ITextStyle;
 import leviathan.api.text.TextStyleBuilder;
-import leviathan.gui.layouts.HorizontalLayout;
-import leviathan.gui.layouts.PaneLayout;
-import leviathan.gui.layouts.VerticalLayout;
+import leviathan.widgets.layouts.HorizontalLayout;
+import leviathan.widgets.layouts.PaneLayout;
+import leviathan.widgets.layouts.VerticalLayout;
 import leviathan.utils.ColourProperties;
 
 public class WidgetFactory implements IWidgetFactory {
